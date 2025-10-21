@@ -1,0 +1,110 @@
+<%- include('../../partials/header', { title: 'Add Student' }) %>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-plus"></i> Add New Student</h4>
+                </div>
+                <div class="card-body">
+                    <% if (error) { %>
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle"></i> <%= error %>
+                    </div>
+                    <% } %>
+
+                    <form action="/admin/students/add" method="POST" class="needs-validation" novalidate>
+                        <h5 class="mb-3">Student Information</h5>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="admission_number" class="form-label">Admission Number *</label>
+                                <input type="text" class="form-control" id="admission_number"
+                                       name="admission_number" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="class_id" class="form-label">Class *</label>
+                                <select class="form-select" id="class_id" name="class_id" required>
+                                    <option value="">Select Class</option>
+                                    <% classes.forEach(cls => { %>
+                                    <option value="<%= cls.id %>"><%= cls.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="first_name" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" id="first_name"
+                                       name="first_name" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="middle_name" class="form-label">Middle Name</label>
+                                <input type="text" class="form-control" id="middle_name"
+                                       name="middle_name">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="last_name" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="last_name"
+                                       name="last_name" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="date_of_birth" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="date_of_birth"
+                                       name="date_of_birth">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label">Gender *</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">Parent/Guardian Information</h5>
+
+                        <div class="mb-3">
+                            <label for="parent_name" class="form-label">Parent/Guardian Name</label>
+                            <input type="text" class="form-control" id="parent_name"
+                                   name="parent_name">
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="parent_email" class="form-label">Parent Email</label>
+                                <input type="email" class="form-control" id="parent_email"
+                                       name="parent_email">
+                                <small class="text-muted">Reports will be sent to this email</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="parent_phone" class="form-label">Parent Phone</label>
+                                <input type="tel" class="form-control" id="parent_phone"
+                                       name="parent_phone">
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg"></i> Add Student
+                            </button>
+                            <a href="/admin/students" class="btn btn-secondary">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../../partials/footer') %>

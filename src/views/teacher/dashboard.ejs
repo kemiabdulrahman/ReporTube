@@ -1,0 +1,115 @@
+<%- include('../partials/header', { title: 'Teacher Dashboard' }) %>
+
+<div class="container-fluid">
+    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Teacher Dashboard</h2>
+
+    <!-- Welcome Message -->
+    <div class="alert alert-info mb-4">
+        <h4><i class="bi bi-person-circle"></i> Welcome, <%= user.full_name %>!</h4>
+        <p class="mb-0">Manage your classes and update student scores from this dashboard.</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">My Classes</h6>
+                            <h2 class="mb-0"><%= stats.totalClasses %></h2>
+                        </div>
+                        <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Total Students</h6>
+                            <h2 class="mb-0"><%= stats.totalStudents %></h2>
+                        </div>
+                        <i class="bi bi-people" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <a href="/teacher/classes" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-building"></i> View My Classes
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <a href="/teacher/scores/my-classes" class="btn btn-outline-success w-100">
+                                <i class="bi bi-pencil-square"></i> Enter Scores
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Classes -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-building"></i> My Classes</h5>
+                </div>
+                <div class="card-body">
+                    <% if (classes.length > 0) { %>
+                    <div class="row">
+                        <% classes.forEach(cls => { %>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= cls.name %></h5>
+                                    <p class="card-text">
+                                        <strong>Subject:</strong> <%= cls.subject_name %><br>
+                                        <strong>Level:</strong> <%= cls.level %><br>
+                                        <strong>Students:</strong> <%= cls.student_count %><br>
+                                        <strong>Year:</strong> <%= cls.academic_year %>
+                                    </p>
+                                    <div class="d-grid gap-2">
+                                        <a href="/teacher/classes/<%= cls.id %>/students/<%= cls.subject_id %>"
+                                           class="btn btn-sm btn-primary">
+                                            <i class="bi bi-people"></i> View Students
+                                        </a>
+                                        <a href="/teacher/scores/entry?class_id=<%= cls.id %>&subject_id=<%= cls.subject_id %>&academic_year=<%= cls.academic_year %>&term=First Term"
+                                           class="btn btn-sm btn-success">
+                                            <i class="bi bi-pencil"></i> Enter Scores
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                    <% } else { %>
+                    <p class="text-muted text-center mb-0">
+                        You are not assigned to any classes yet. Please contact the administrator.
+                    </p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

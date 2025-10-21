@@ -1,0 +1,117 @@
+<%- include('../../partials/header', { title: 'Students Management' }) %>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people"></i> Students Management</h2>
+        <a href="/admin/students/add" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Add New Student
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="/admin/students" class="row g-3">
+                <div class="col-md-4">
+                    <label for="class_id" class="form-label">Filter by Class</label>
+                    <select class="form-select" id="class_id" name="class_id">
+                        <option value="">All Classes</option>
+                        <% classes.forEach(cls => { %>
+                        <option value="<%= cls.id %>" <%= filters.class_id == cls.id ? 'selected' : '' %>>
+                            <%= cls.name %>
+                        </option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search</label>
+                    <input type="text" class="form-control" id="search" name="search"
+                           placeholder="Name or Admission No." value="<%= filters.search || '' %>">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search"></i> Filter
+                    </button>
+                    <a href="/admin/students" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-list"></i> Students List
+                <span class="badge bg-primary"><%= students.length %></span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <% if (students.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Admission No.</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Class</th>
+                            <th>Parent Email</th>
+                            <th>Parent Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% students.forEach(student => { %>
+                        <tr>
+                            <td><strong><%= student.admission_number %></strong></td>
+                            <td>
+                                <%= student.first_name %> <%= student.middle_name || '' %> <%= student.last_name %>
+                            </td>
+                            <td><%= student.gender %></td>
+                            <td>
+                                <% if (student.class_name) { %>
+                                <span class="badge bg-info"><%= student.class_name %></span>
+                                <% } else { %>
+                                <span class="badge bg-secondary">No Class</span>
+                                <% } %>
+                            </td>
+                            <td><%= student.parent_email || 'N/A' %></td>
+                            <td><%= student.parent_phone || 'N/A' %></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="/admin/students/edit/<%= student.id %>"
+                                       class="btn btn-outline-primary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="/admin/students/delete/<%= student.id %>"
+                                          method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete this student?')"
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-3">No students found.</p>
+                <a href="/admin/students/add" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i> Add Your First Student
+                </a>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('../../partials/footer') %>
