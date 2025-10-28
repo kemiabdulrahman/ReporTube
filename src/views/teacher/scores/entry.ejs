@@ -182,7 +182,15 @@
                     </td>
                     <td>
                       <span class="tag is-info total-score" data-student-id="<%= student.id %>">
-                        <%= student.score ? (parseFloat(student.score.ca_score || 0) + parseFloat(student.score.exam_score || 0)).toFixed(1) : '0.0' %>
+                        <%
+                          let totalScore = 0;
+                          if (student.score) {
+                            const ca = parseFloat(student.score.ca_score || 0);
+                            const exam = parseFloat(student.score.exam_score || 0);
+                            totalScore = ca + exam;
+                          }
+                        %>
+                        <%= totalScore.toFixed(1) %>
                       </span>
                     </td>
                     <td>

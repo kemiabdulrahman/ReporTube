@@ -134,7 +134,10 @@
             <span class="icon is-large has-text-info">
               <i class="mdi mdi-calculator mdi-48px"></i>
             </span>
-            <p class="title is-4"><%= statistics.average_score ? statistics.average_score.toFixed(1) : '0.0' %>%</p>
+            <%
+              let avgStatScore = statistics.average_score ? statistics.average_score : 0;
+            %>
+            <p class="title is-4"><%= avgStatScore.toFixed(1) %>%</p>
             <p class="subtitle is-6">Average Score</p>
           </div>
         </div>
@@ -254,18 +257,27 @@
                     </span>
                   </td>
                   <td>
+                    <%
+                      let adminCaScore = parseFloat(score.ca_score || 0);
+                    %>
                     <span class="tag is-light">
-                      <%= parseFloat(score.ca_score || 0).toFixed(1) %> / 40
+                      <%= adminCaScore.toFixed(1) %> / 40
                     </span>
                   </td>
                   <td>
+                    <%
+                      let adminExamScore = parseFloat(score.exam_score || 0);
+                    %>
                     <span class="tag is-light">
-                      <%= parseFloat(score.exam_score || 0).toFixed(1) %> / 60
+                      <%= adminExamScore.toFixed(1) %> / 60
                     </span>
                   </td>
                   <td>
+                    <%
+                      let adminTotalScore = parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0);
+                    %>
                     <span class="tag is-warning is-medium">
-                      <strong><%= (parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0)).toFixed(1) %></strong>
+                      <strong><%= adminTotalScore.toFixed(1) %></strong>
                     </span>
                   </td>
                   <td>

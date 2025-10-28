@@ -126,7 +126,10 @@
               <span class="icon is-large has-text-info">
                 <i class="mdi mdi-calculator mdi-48px"></i>
               </span>
-              <p class="title is-3"><%= summary.averageScore ? summary.averageScore.toFixed(1) : '0.0' %>%</p>
+              <%
+                let avgScore = summary.averageScore ? summary.averageScore : 0;
+              %>
+              <p class="title is-3"><%= avgScore.toFixed(1) %>%</p>
               <p class="subtitle is-6">Average Score</p>
             </div>
           </div>
@@ -223,18 +226,27 @@
                     </div>
                   </td>
                   <td>
+                    <%
+                      let caScore = score.ca_score ? parseFloat(score.ca_score) : 0;
+                    %>
                     <span class="tag is-info is-light">
-                      <%= score.ca_score ? parseFloat(score.ca_score).toFixed(1) : '0.0' %> / 40
+                      <%= caScore.toFixed(1) %> / 40
                     </span>
                   </td>
                   <td>
+                    <%
+                      let examScore = score.exam_score ? parseFloat(score.exam_score) : 0;
+                    %>
                     <span class="tag is-primary is-light">
-                      <%= score.exam_score ? parseFloat(score.exam_score).toFixed(1) : '0.0' %> / 60
+                      <%= examScore.toFixed(1) %> / 60
                     </span>
                   </td>
                   <td>
+                    <%
+                      let scoreTotal = parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0);
+                    %>
                     <span class="tag is-warning is-medium">
-                      <strong><%= ((parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0))).toFixed(1) %></strong>
+                      <strong><%= scoreTotal.toFixed(1) %></strong>
                     </span>
                   </td>
                   <td>
@@ -286,7 +298,10 @@
                   %>
                   <% if (strongSubjects.length > 0) { %>
                     <% strongSubjects.forEach(function(subject) { %>
-                      <li><%= subject.subject_name %> - <%= ((parseFloat(subject.ca_score || 0) + parseFloat(subject.exam_score || 0))).toFixed(1) %>%</li>
+                      <%
+                        let strongTotal = parseFloat(subject.ca_score || 0) + parseFloat(subject.exam_score || 0);
+                      %>
+                      <li><%= subject.subject_name %> - <%= strongTotal.toFixed(1) %>%</li>
                     <% }); %>
                   <% } else { %>
                     <li>Focus on improving overall performance</li>
@@ -306,7 +321,10 @@
                   %>
                   <% if (weakSubjects.length > 0) { %>
                     <% weakSubjects.forEach(function(subject) { %>
-                      <li><%= subject.subject_name %> - <%= ((parseFloat(subject.ca_score || 0) + parseFloat(subject.exam_score || 0))).toFixed(1) %>%</li>
+                      <%
+                        let weakTotal = parseFloat(subject.ca_score || 0) + parseFloat(subject.exam_score || 0);
+                      %>
+                      <li><%= subject.subject_name %> - <%= weakTotal.toFixed(1) %>%</li>
                     <% }); %>
                   <% } else { %>
                     <li>Maintain current performance level</li>
