@@ -1,0 +1,472 @@
+<%- include('../../partials/header', { title: 'Review Scores' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-clipboard-check-outline"></i></span>
+          <span>Review Scores</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <div class="buttons">
+          <button id="approve-selected-btn" class="button is-success" disabled onclick="approveSelectedScores()">
+            <span class="icon"><i class="mdi mdi-check-all"></i></span>
+            <span>Approve Selected</span>
+          </button>
+          <a href="/admin/dashboard" class="button is-light">
+            <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+            <span>Back to Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="box mb-5">
+      <h4 class="title is-5 mb-3">
+        <span class="icon"><i class="mdi mdi-filter-outline"></i></span>
+        <span>Filter Scores</span>
+      </h4>
+      
+      <form method="GET" action="/admin/scores">
+        <div class="columns">
+          <div class="column is-4">
+            <div class="field">
+              <label class="label">Select Class</label>
+              <div class="control has-icons-left">
+                <div class="select is-fullwidth">
+                  <select name="class_id" onchange="this.form.submit()">
+                    <option value="">All Classes</option>
+                    <% classes.forEach(function(classItem) { %>
+                      <option value="<%= classItem.id %>" <%= filters.class_id == classItem.id ? 'selected' : '' %>>
+                        <%= classItem.name %> - <%= classItem.level %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <span class="icon is-left"><i class="mdi mdi-school"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="field">
+              <label class="label">Academic Year</label>
+              <div class="control has-icons-left">
+                <div class="select is-fullwidth">
+                  <select name="academic_year" onchange="this.form.submit()">
+                    <option value="">All Years</option>
+                    <option value="2023" <%= filters.academic_year == '2023' ? 'selected' : '' %>>2023</option>
+                    <option value="2024" <%= filters.academic_year == '2024' ? 'selected' : '' %>>2024</option>
+                    <option value="2025" <%= filters.academic_year == '2025' ? 'selected' : '' %>>2025</option>
+                  </select>
+                </div>
+                <span class="icon is-left"><i class="mdi mdi-calendar-range"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="field">
+              <label class="label">Term</label>
+              <div class="control has-icons-left">
+                <div class="select is-fullwidth">
+                  <select name="term" onchange="this.form.submit()">
+                    <option value="">All Terms</option>
+                    <option value="1" <%= filters.term == '1' ? 'selected' : '' %>>Term 1</option>
+                    <option value="2" <%= filters.term == '2' ? 'selected' : '' %>>Term 2</option>
+                    <option value="3" <%= filters.term == '3' ? 'selected' : '' %>>Term 3</option>
+                  </select>
+                </div>
+                <span class="icon is-left"><i class="mdi mdi-calendar"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <% if (filters.class_id || filters.academic_year || filters.term) { %>
+          <div class="field">
+            <div class="control">
+              <a href="/admin/scores" class="button is-light is-small">
+                <span class="icon"><i class="mdi mdi-close"></i></span>
+                <span>Clear Filters</span>
+              </a>
+            </div>
+          </div>
+        <% } %>
+      </form>
+    </div>
+
+    <!-- Statistics -->
+    <% if (statistics) { %>
+      <div class="columns mb-5">
+        <div class="column is-3">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-primary">
+              <i class="mdi mdi-clipboard-list mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= statistics.total_scores %></p>
+            <p class="subtitle is-6">Total Scores</p>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-success">
+              <i class="mdi mdi-check-circle mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= statistics.approved_scores %></p>
+            <p class="subtitle is-6">Approved</p>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-warning">
+              <i class="mdi mdi-clock-outline mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= statistics.pending_scores %></p>
+            <p class="subtitle is-6">Pending Review</p>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-info">
+              <i class="mdi mdi-calculator mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= statistics.average_score ? statistics.average_score.toFixed(1) : '0.0' %>%</p>
+            <p class="subtitle is-6">Average Score</p>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Message Container -->
+    <div id="message-container"></div>
+
+    <!-- Scores List -->
+    <div class="box">
+      <% if (!filters.class_id || !filters.academic_year || !filters.term) { %>
+        <div class="notification is-info is-light">
+          <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+          <span>Please select a class, academic year, and term to view scores.</span>
+        </div>
+      <% } else if (scores.length === 0) { %>
+        <div class="notification is-warning is-light">
+          <span class="icon"><i class="mdi mdi-alert-outline"></i></span>
+          <span>No scores found for the selected criteria.</span>
+        </div>
+      <% } else { %>
+        
+        <!-- Bulk Actions -->
+        <div class="level mb-4">
+          <div class="level-left">
+            <div class="field">
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                  <span class="ml-2">Select All</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="field is-grouped">
+              <div class="control">
+                <span class="tag is-info" id="selected-count">0 selected</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped">
+            <thead>
+              <tr>
+                <th width="5%">
+                  <span class="icon"><i class="mdi mdi-checkbox-outline"></i></span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-account"></i></span>
+                  <span>Student</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-book"></i></span>
+                  <span>Subject</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-clipboard-text-outline"></i></span>
+                  <span>CA Score</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-school"></i></span>
+                  <span>Exam Score</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-calculator"></i></span>
+                  <span>Total</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-trophy-outline"></i></span>
+                  <span>Grade</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-account-tie"></i></span>
+                  <span>Teacher</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-check-circle"></i></span>
+                  <span>Status</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-cog"></i></span>
+                  <span>Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% scores.forEach(function(score) { %>
+                <tr>
+                  <td>
+                    <% if (!score.is_approved) { %>
+                      <label class="checkbox">
+                        <input type="checkbox" class="score-checkbox" data-score-id="<%= score.id %>" onchange="updateSelectedCount()">
+                      </label>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="media">
+                      <div class="media-left">
+                        <span class="icon has-text-primary">
+                          <i class="mdi mdi-account-circle"></i>
+                        </span>
+                      </div>
+                      <div class="media-content">
+                        <strong><%= score.student_name %></strong>
+                        <br><small class="has-text-grey"><%= score.admission_number %></small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="tag is-info">
+                      <span class="icon"><i class="mdi mdi-book"></i></span>
+                      <span><%= score.subject_name %></span>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="tag is-light">
+                      <%= parseFloat(score.ca_score || 0).toFixed(1) %> / 40
+                    </span>
+                  </td>
+                  <td>
+                    <span class="tag is-light">
+                      <%= parseFloat(score.exam_score || 0).toFixed(1) %> / 60
+                    </span>
+                  </td>
+                  <td>
+                    <span class="tag is-warning is-medium">
+                      <strong><%= (parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0)).toFixed(1) %></strong>
+                    </span>
+                  </td>
+                  <td>
+                    <% 
+                      const total = parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0);
+                      let gradeClass = 'is-danger';
+                      if (total >= 80) gradeClass = 'is-success';
+                      else if (total >= 70) gradeClass = 'is-info';
+                      else if (total >= 60) gradeClass = 'is-warning';
+                      else if (total >= 50) gradeClass = 'is-warning';
+                      else if (total >= 40) gradeClass = 'is-danger';
+                    %>
+                    <span class="tag is-medium <%= gradeClass %>">
+                      <strong><%= score.grade || 'F' %></strong>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="has-text-grey-dark"><%= score.teacher_name %></span>
+                  </td>
+                  <td>
+                    <% if (score.is_approved) { %>
+                      <span class="tag is-success">
+                        <span class="icon"><i class="mdi mdi-check-circle"></i></span>
+                        <span>Approved</span>
+                      </span>
+                    <% } else { %>
+                      <span class="tag is-warning">
+                        <span class="icon"><i class="mdi mdi-clock-outline"></i></span>
+                        <span>Pending</span>
+                      </span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (!score.is_approved) { %>
+                      <button class="button is-success is-small" onclick="approveScore('<%= score.id %>')">
+                        <span class="icon"><i class="mdi mdi-check"></i></span>
+                        <span>Approve</span>
+                      </button>
+                    <% } else { %>
+                      <span class="icon has-text-success">
+                        <i class="mdi mdi-check-circle"></i>
+                      </span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Additional Information -->
+    <% if (scores.length > 0) { %>
+      <div class="box has-background-light">
+        <h4 class="title is-5 mb-3">
+          <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+          <span>Score Review Information</span>
+        </h4>
+        
+        <div class="content">
+          <p><strong>Score Approval Process:</strong></p>
+          <ul>
+            <li>Teachers enter scores for their assigned subjects</li>
+            <li>All scores require administrative approval before being finalized</li>
+            <li>Approved scores cannot be modified without admin permissions</li>
+            <li>Students and parents can only see approved scores in reports</li>
+          </ul>
+          
+          <p><strong>Grade Scale:</strong> A (80-100), B (70-79), C (60-69), D (50-59), E (40-49), F (0-39)</p>
+        </div>
+      </div>
+    <% } %>
+
+  </div>
+</section>
+
+<script>
+let selectedScores = new Set();
+
+function toggleSelectAll() {
+  const selectAllCheckbox = document.getElementById('select-all');
+  const scoreCheckboxes = document.querySelectorAll('.score-checkbox');
+  
+  scoreCheckboxes.forEach(checkbox => {
+    checkbox.checked = selectAllCheckbox.checked;
+    if (selectAllCheckbox.checked) {
+      selectedScores.add(checkbox.dataset.scoreId);
+    } else {
+      selectedScores.delete(checkbox.dataset.scoreId);
+    }
+  });
+  
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  selectedScores.clear();
+  const checkedBoxes = document.querySelectorAll('.score-checkbox:checked');
+  
+  checkedBoxes.forEach(checkbox => {
+    selectedScores.add(checkbox.dataset.scoreId);
+  });
+  
+  const count = selectedScores.size;
+  document.getElementById('selected-count').textContent = `${count} selected`;
+  document.getElementById('approve-selected-btn').disabled = count === 0;
+  
+  // Update select-all checkbox state
+  const allCheckboxes = document.querySelectorAll('.score-checkbox');
+  const selectAllCheckbox = document.getElementById('select-all');
+  
+  if (allCheckboxes.length > 0) {
+    selectAllCheckbox.indeterminate = count > 0 && count < allCheckboxes.length;
+    selectAllCheckbox.checked = count === allCheckboxes.length;
+  }
+}
+
+function approveScore(scoreId) {
+  fetch(`/admin/scores/approve/${scoreId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.success) {
+      showMessage('Score approved successfully!', 'is-success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } else {
+      showMessage('Failed to approve score.', 'is-danger');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showMessage('An error occurred while approving the score.', 'is-danger');
+  });
+}
+
+function approveSelectedScores() {
+  if (selectedScores.size === 0) {
+    showMessage('No scores selected.', 'is-warning');
+    return;
+  }
+  
+  const scoreIds = Array.from(selectedScores);
+  
+  fetch('/admin/scores/approve-multiple', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ score_ids: scoreIds })
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.success) {
+      showMessage(`Successfully approved ${scoreIds.length} scores!`, 'is-success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      showMessage('Failed to approve some scores.', 'is-danger');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showMessage('An error occurred while approving scores.', 'is-danger');
+  });
+}
+
+function showMessage(message, type) {
+  const messageContainer = document.getElementById('message-container');
+  messageContainer.innerHTML = `
+    <div class="notification ${type} is-light">
+      <button class="delete"></button>
+      <span>${message}</span>
+    </div>
+  `;
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    messageContainer.innerHTML = '';
+  }, 5000);
+
+  // Add click event to close button
+  const deleteButton = messageContainer.querySelector('.delete');
+  if (deleteButton) {
+    deleteButton.addEventListener('click', function() {
+      messageContainer.innerHTML = '';
+    });
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  updateSelectedCount();
+});
+</script>
+
+<%- include('../../partials/footer') %>

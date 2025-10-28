@@ -1,0 +1,348 @@
+<%- include('../../partials/header', { title: 'Student Report - ' + student.first_name + ' ' + student.last_name }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-file-document-outline"></i></span>
+          <span>Student Report</span>
+        </h2>
+        <p class="subtitle is-5">
+          <strong><%= student.first_name %> <%= student.last_name %></strong> - <%= academic_year %> Academic Year, Term <%= term %>
+        </p>
+      </div>
+      <div class="level-right">
+        <div class="buttons">
+          <a href="/teacher/reports/download?student_id=<%= student.id %>&academic_year=<%= academic_year %>&term=<%= term %>" class="button is-success">
+            <span class="icon"><i class="mdi mdi-download"></i></span>
+            <span>Download PDF</span>
+          </a>
+          <a href="/teacher/classes/<%= student.class_id %>/students/<%= student.subject_id || '' %>" class="button is-light">
+            <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+            <span>Back to Class</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Information -->
+    <div class="box mb-5">
+      <h3 class="title is-4 mb-4">
+        <span class="icon"><i class="mdi mdi-account-outline"></i></span>
+        <span>Student Information</span>
+      </h3>
+      
+      <div class="columns">
+        <div class="column is-3">
+          <div class="has-text-centered">
+            <span class="icon is-large has-text-primary">
+              <i class="mdi mdi-account-circle mdi-64px"></i>
+            </span>
+            <p class="title is-4 mt-2"><%= student.first_name %> <%= student.last_name %></p>
+          </div>
+        </div>
+        <div class="column is-9">
+          <div class="columns is-multiline">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Student ID</label>
+                <p class="control">
+                  <span class="tag is-info"><%= student.id %></span>
+                </p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Class</label>
+                <p class="control">
+                  <span class="tag is-primary"><%= student.class_name || 'N/A' %></span>
+                </p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Level</label>
+                <p class="control">
+                  <span class="tag is-success"><%= student.level || 'N/A' %></span>
+                </p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Gender</label>
+                <p class="control">
+                  <% if (student.gender) { %>
+                    <span class="tag is-light <%= student.gender === 'Male' ? 'is-info' : 'is-warning' %>">
+                      <span class="icon">
+                        <i class="mdi mdi-<%= student.gender === 'Male' ? 'gender-male' : 'gender-female' %>"></i>
+                      </span>
+                      <span><%= student.gender %></span>
+                    </span>
+                  <% } else { %>
+                    <span class="tag is-light">N/A</span>
+                  <% } %>
+                </p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Email</label>
+                <p class="control">
+                  <span><%= student.email || 'N/A' %></span>
+                </p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Date of Birth</label>
+                <p class="control">
+                  <% if (student.date_of_birth) { %>
+                    <span><%= new Date(student.date_of_birth).toLocaleDateString() %></span>
+                  <% } else { %>
+                    <span>N/A</span>
+                  <% } %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Academic Performance Summary -->
+    <% if (summary) { %>
+      <div class="box mb-5">
+        <h3 class="title is-4 mb-4">
+          <span class="icon"><i class="mdi mdi-chart-line"></i></span>
+          <span>Academic Performance Summary</span>
+        </h3>
+        
+        <div class="columns">
+          <div class="column is-3">
+            <div class="has-text-centered">
+              <span class="icon is-large has-text-info">
+                <i class="mdi mdi-calculator mdi-48px"></i>
+              </span>
+              <p class="title is-3"><%= summary.averageScore ? summary.averageScore.toFixed(1) : '0.0' %>%</p>
+              <p class="subtitle is-6">Average Score</p>
+            </div>
+          </div>
+          <div class="column is-3">
+            <div class="has-text-centered">
+              <span class="icon is-large has-text-success">
+                <i class="mdi mdi-trophy-outline mdi-48px"></i>
+              </span>
+              <p class="title is-3"><%= summary.overallGrade || 'N/A' %></p>
+              <p class="subtitle is-6">Overall Grade</p>
+            </div>
+          </div>
+          <div class="column is-3">
+            <div class="has-text-centered">
+              <span class="icon is-large has-text-primary">
+                <i class="mdi mdi-book-multiple mdi-48px"></i>
+              </span>
+              <p class="title is-3"><%= scores.length %></p>
+              <p class="subtitle is-6">Subjects</p>
+            </div>
+          </div>
+          <div class="column is-3">
+            <div class="has-text-centered">
+              <span class="icon is-large has-text-warning">
+                <i class="mdi mdi-medal-outline mdi-48px"></i>
+              </span>
+              <p class="title is-3"><%= summary.position || 'N/A' %></p>
+              <p class="subtitle is-6">Class Position</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Subject Performance -->
+    <div class="box">
+      <h3 class="title is-4 mb-4">
+        <span class="icon"><i class="mdi mdi-book-multiple-outline"></i></span>
+        <span>Subject Performance</span>
+      </h3>
+
+      <% if (scores.length === 0) { %>
+        <div class="notification is-info is-light">
+          <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+          <span>No scores recorded for this student in the selected term.</span>
+        </div>
+      <% } else { %>
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped">
+            <thead>
+              <tr>
+                <th>
+                  <span class="icon"><i class="mdi mdi-book-outline"></i></span>
+                  <span>Subject</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-clipboard-text-outline"></i></span>
+                  <span>CA Score (40)</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-school"></i></span>
+                  <span>Exam Score (60)</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-calculator"></i></span>
+                  <span>Total (100)</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-trophy-outline"></i></span>
+                  <span>Grade</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-comment-text-outline"></i></span>
+                  <span>Remark</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% scores.forEach(function(score) { %>
+                <tr>
+                  <td>
+                    <div class="media">
+                      <div class="media-left">
+                        <span class="icon has-text-primary">
+                          <i class="mdi mdi-book"></i>
+                        </span>
+                      </div>
+                      <div class="media-content">
+                        <strong><%= score.subject_name || 'Unknown Subject' %></strong>
+                        <% if (score.subject_code) { %>
+                          <br><small class="has-text-grey"><%= score.subject_code %></small>
+                        <% } %>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="tag is-info is-light">
+                      <%= score.ca_score ? parseFloat(score.ca_score).toFixed(1) : '0.0' %> / 40
+                    </span>
+                  </td>
+                  <td>
+                    <span class="tag is-primary is-light">
+                      <%= score.exam_score ? parseFloat(score.exam_score).toFixed(1) : '0.0' %> / 60
+                    </span>
+                  </td>
+                  <td>
+                    <span class="tag is-warning is-medium">
+                      <strong><%= ((parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0))).toFixed(1) %></strong>
+                    </span>
+                  </td>
+                  <td>
+                    <% 
+                      const total = parseFloat(score.ca_score || 0) + parseFloat(score.exam_score || 0);
+                      let gradeClass = 'is-danger';
+                      if (total >= 80) gradeClass = 'is-success';
+                      else if (total >= 70) gradeClass = 'is-info';
+                      else if (total >= 60) gradeClass = 'is-warning';
+                      else if (total >= 50) gradeClass = 'is-warning';
+                      else if (total >= 40) gradeClass = 'is-danger';
+                    %>
+                    <span class="tag is-medium <%= gradeClass %>">
+                      <strong><%= score.grade || 'F' %></strong>
+                    </span>
+                  </td>
+                  <td>
+                    <% if (score.remark) { %>
+                      <span class="tag is-light">
+                        <%= score.remark %>
+                      </span>
+                    <% } else { %>
+                      <span class="has-text-grey">No remark</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Performance Analysis -->
+        <div class="box has-background-light mt-5">
+          <h4 class="title is-5 mb-3">
+            <span class="icon"><i class="mdi mdi-chart-pie"></i></span>
+            <span>Performance Analysis</span>
+          </h4>
+          
+          <div class="columns">
+            <div class="column is-6">
+              <div class="content">
+                <h6 class="title is-6">Strengths:</h6>
+                <ul>
+                  <% 
+                    const strongSubjects = scores.filter(s => {
+                      const total = parseFloat(s.ca_score || 0) + parseFloat(s.exam_score || 0);
+                      return total >= 70;
+                    });
+                  %>
+                  <% if (strongSubjects.length > 0) { %>
+                    <% strongSubjects.forEach(function(subject) { %>
+                      <li><%= subject.subject_name %> - <%= ((parseFloat(subject.ca_score || 0) + parseFloat(subject.exam_score || 0))).toFixed(1) %>%</li>
+                    <% }); %>
+                  <% } else { %>
+                    <li>Focus on improving overall performance</li>
+                  <% } %>
+                </ul>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="content">
+                <h6 class="title is-6">Areas for Improvement:</h6>
+                <ul>
+                  <% 
+                    const weakSubjects = scores.filter(s => {
+                      const total = parseFloat(s.ca_score || 0) + parseFloat(s.exam_score || 0);
+                      return total < 60;
+                    });
+                  %>
+                  <% if (weakSubjects.length > 0) { %>
+                    <% weakSubjects.forEach(function(subject) { %>
+                      <li><%= subject.subject_name %> - <%= ((parseFloat(subject.ca_score || 0) + parseFloat(subject.exam_score || 0))).toFixed(1) %>%</li>
+                    <% }); %>
+                  <% } else { %>
+                    <li>Maintain current performance level</li>
+                  <% } %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="box">
+      <h3 class="title is-5 mb-4">
+        <span class="icon"><i class="mdi mdi-lightning-bolt-outline"></i></span>
+        <span>Quick Actions</span>
+      </h3>
+      
+      <div class="buttons">
+        <a href="/teacher/reports/download?student_id=<%= student.id %>&academic_year=<%= academic_year %>&term=<%= term %>" class="button is-success">
+          <span class="icon"><i class="mdi mdi-download"></i></span>
+          <span>Download PDF Report</span>
+        </a>
+        <a href="/teacher/scores/entry?class_id=<%= student.class_id %>&subject_id=<%= student.subject_id || '' %>&academic_year=<%= academic_year %>&term=<%= term %>" class="button is-primary">
+          <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+          <span>Edit Scores</span>
+        </a>
+        <a href="/teacher/reports/student?student_id=<%= student.id %>&academic_year=<%= academic_year %>&term=<%= term === '1' ? '2' : '1' %>" class="button is-info">
+          <span class="icon"><i class="mdi mdi-file-document-outline"></i></span>
+          <span>View Other Term</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

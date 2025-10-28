@@ -1,0 +1,466 @@
+<%- include('../../partials/header', { title: 'Enter Scores - ' + class.name }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+          <span>Enter Scores</span>
+        </h2>
+        <p class="subtitle is-5">
+          <strong><%= class.name %></strong> - <%= academic_year %> Academic Year, Term <%= term %>
+        </p>
+      </div>
+      <div class="level-right">
+        <div class="buttons">
+          <button id="save-all-btn" class="button is-primary" disabled>
+            <span class="icon"><i class="mdi mdi-content-save-outline"></i></span>
+            <span>Save All Scores</span>
+          </button>
+          <a href="/teacher/scores/my-classes" class="button is-light">
+            <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+            <span>Back to Classes</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Class Info -->
+    <div class="box mb-5">
+      <div class="columns">
+        <div class="column is-3">
+          <div class="field">
+            <label class="label">Class</label>
+            <p class="control">
+              <span class="tag is-info is-medium"><%= class.name %></span>
+            </p>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label">Academic Year</label>
+            <p class="control">
+              <span class="tag is-primary is-medium"><%= academic_year %></span>
+            </p>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label">Term</label>
+            <p class="control">
+              <span class="tag is-success is-medium">Term <%= term %></span>
+            </p>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="field">
+            <label class="label">Total Students</label>
+            <p class="control">
+              <span class="tag is-warning is-medium"><%= students.length %> students</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="message-container"></div>
+
+    <!-- Score Entry Instructions -->
+    <div class="notification is-info is-light mb-5">
+      <div class="content">
+        <p><strong>Instructions:</strong></p>
+        <ul>
+          <li>CA Score: Continuous Assessment (0-40 marks)</li>
+          <li>Exam Score: Final Examination (0-60 marks)</li>
+          <li>Total Score: Automatically calculated (CA + Exam)</li>
+          <li>Grade: Automatically assigned based on total score</li>
+          <li>You can save individual scores or all scores at once</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Scores Entry Form -->
+    <div class="box">
+      <% if (students.length === 0) { %>
+        <div class="notification is-warning is-light">
+          <span class="icon"><i class="mdi mdi-alert-outline"></i></span>
+          <span>No students found in this class.</span>
+        </div>
+      <% } else { %>
+        <form id="scores-form">
+          <input type="hidden" name="class_id" value="<%= class.id %>">
+          <input type="hidden" name="subject_id" value="<%= subject_id %>">
+          <input type="hidden" name="academic_year" value="<%= academic_year %>">
+          <input type="hidden" name="term" value="<%= term %>">
+
+          <div class="table-container">
+            <table class="table is-fullwidth is-striped">
+              <thead>
+                <tr>
+                  <th style="width: 5%">#</th>
+                  <th style="width: 25%">
+                    <span class="icon"><i class="mdi mdi-account"></i></span>
+                    <span>Student Name</span>
+                  </th>
+                  <th style="width: 15%">
+                    <span class="icon"><i class="mdi mdi-clipboard-text-outline"></i></span>
+                    <span>CA Score (40)</span>
+                  </th>
+                  <th style="width: 15%">
+                    <span class="icon"><i class="mdi mdi-school"></i></span>
+                    <span>Exam Score (60)</span>
+                  </th>
+                  <th style="width: 10%">
+                    <span class="icon"><i class="mdi mdi-calculator"></i></span>
+                    <span>Total</span>
+                  </th>
+                  <th style="width: 10%">
+                    <span class="icon"><i class="mdi mdi-trophy-outline"></i></span>
+                    <span>Grade</span>
+                  </th>
+                  <th style="width: 15%">
+                    <span class="icon"><i class="mdi mdi-comment-text-outline"></i></span>
+                    <span>Remark</span>
+                  </th>
+                  <th style="width: 5%">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% students.forEach(function(student, index) { %>
+                  <tr data-student-id="<%= student.id %>">
+                    <td><%= index + 1 %></td>
+                    <td>
+                      <div class="media">
+                        <div class="media-left">
+                          <span class="icon has-text-primary">
+                            <i class="mdi mdi-account-circle"></i>
+                          </span>
+                        </div>
+                        <div class="media-content">
+                          <strong><%= student.first_name %> <%= student.last_name %></strong>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="field">
+                        <div class="control">
+                          <input 
+                            class="input ca-score" 
+                            type="number" 
+                            name="scores[<%= index %>][ca_score]" 
+                            min="0" 
+                            max="40" 
+                            step="0.1"
+                            placeholder="0-40"
+                            value="<%= student.score ? student.score.ca_score : '' %>"
+                            data-student-id="<%= student.id %>"
+                          >
+                          <input type="hidden" name="scores[<%= index %>][student_id]" value="<%= student.id %>">
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="field">
+                        <div class="control">
+                          <input 
+                            class="input exam-score" 
+                            type="number" 
+                            name="scores[<%= index %>][exam_score]" 
+                            min="0" 
+                            max="60" 
+                            step="0.1"
+                            placeholder="0-60"
+                            value="<%= student.score ? student.score.exam_score : '' %>"
+                            data-student-id="<%= student.id %>"
+                          >
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="tag is-info total-score" data-student-id="<%= student.id %>">
+                        <%= student.score ? (parseFloat(student.score.ca_score || 0) + parseFloat(student.score.exam_score || 0)).toFixed(1) : '0.0' %>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="tag grade-tag" data-student-id="<%= student.id %>">
+                        <%= student.score ? student.score.grade || 'F' : 'F' %>
+                      </span>
+                    </td>
+                    <td>
+                      <div class="field">
+                        <div class="control">
+                          <div class="select is-small is-fullwidth">
+                            <select name="scores[<%= index %>][remark]" class="remark-select" data-student-id="<%= student.id %>">
+                              <option value="">Select</option>
+                              <option value="Excellent" <%= student.score && student.score.remark === 'Excellent' ? 'selected' : '' %>>Excellent</option>
+                              <option value="Very Good" <%= student.score && student.score.remark === 'Very Good' ? 'selected' : '' %>>Very Good</option>
+                              <option value="Good" <%= student.score && student.score.remark === 'Good' ? 'selected' : '' %>>Good</option>
+                              <option value="Fair" <%= student.score && student.score.remark === 'Fair' ? 'selected' : '' %>>Fair</option>
+                              <option value="Poor" <%= student.score && student.score.remark === 'Poor' ? 'selected' : '' %>>Poor</option>
+                              <option value="Needs Improvement" <%= student.score && student.score.remark === 'Needs Improvement' ? 'selected' : '' %>>Needs Improvement</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <% if (student.score) { %>
+                        <button type="button" class="button is-small is-warning update-single-btn" data-score-id="<%= student.score.id %>">
+                          <span class="icon"><i class="mdi mdi-content-save-outline"></i></span>
+                        </button>
+                      <% } else { %>
+                        <span class="icon has-text-grey-light">
+                          <i class="mdi mdi-plus-circle-outline"></i>
+                        </span>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bulk Actions -->
+          <div class="level mt-5">
+            <div class="level-left">
+              <div class="buttons">
+                <button type="button" id="calculate-all-btn" class="button is-info">
+                  <span class="icon"><i class="mdi mdi-calculator"></i></span>
+                  <span>Calculate All Grades</span>
+                </button>
+                <button type="button" id="clear-all-btn" class="button is-light">
+                  <span class="icon"><i class="mdi mdi-eraser"></i></span>
+                  <span>Clear All</span>
+                </button>
+              </div>
+            </div>
+            <div class="level-right">
+              <button type="submit" class="button is-primary is-large">
+                <span class="icon"><i class="mdi mdi-content-save-outline"></i></span>
+                <span>Save All Scores</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      <% } %>
+    </div>
+
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const messageContainer = document.getElementById('message-container');
+  
+  // Grade calculation function
+  function calculateGrade(total) {
+    if (total >= 80) return { grade: 'A', class: 'is-success' };
+    if (total >= 70) return { grade: 'B', class: 'is-info' };
+    if (total >= 60) return { grade: 'C', class: 'is-warning' };
+    if (total >= 50) return { grade: 'D', class: 'is-warning' };
+    if (total >= 40) return { grade: 'E', class: 'is-danger' };
+    return { grade: 'F', class: 'is-danger' };
+  }
+
+  // Update total and grade for a specific student
+  function updateStudentTotalAndGrade(studentId) {
+    const caInput = document.querySelector(`.ca-score[data-student-id="${studentId}"]`);
+    const examInput = document.querySelector(`.exam-score[data-student-id="${studentId}"]`);
+    const totalSpan = document.querySelector(`.total-score[data-student-id="${studentId}"]`);
+    const gradeSpan = document.querySelector(`.grade-tag[data-student-id="${studentId}"]`);
+
+    const caScore = parseFloat(caInput.value) || 0;
+    const examScore = parseFloat(examInput.value) || 0;
+    const total = caScore + examScore;
+
+    totalSpan.textContent = total.toFixed(1);
+    
+    const gradeInfo = calculateGrade(total);
+    gradeSpan.textContent = gradeInfo.grade;
+    gradeSpan.className = `tag ${gradeInfo.class}`;
+  }
+
+  // Add event listeners to all score inputs
+  document.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+    input.addEventListener('input', function() {
+      const studentId = this.dataset.studentId;
+      updateStudentTotalAndGrade(studentId);
+      
+      // Enable save button when any input changes
+      document.getElementById('save-all-btn').disabled = false;
+    });
+
+    // Validate score ranges
+    input.addEventListener('blur', function() {
+      const max = parseFloat(this.getAttribute('max'));
+      const value = parseFloat(this.value);
+      
+      if (value > max) {
+        this.value = max;
+        showMessage(`Score cannot exceed ${max}`, 'is-warning');
+      }
+      if (value < 0) {
+        this.value = 0;
+        showMessage('Score cannot be negative', 'is-warning');
+      }
+    });
+  });
+
+  // Calculate all grades button
+  document.getElementById('calculate-all-btn').addEventListener('click', function() {
+    document.querySelectorAll('[data-student-id]').forEach(element => {
+      if (element.classList.contains('total-score')) {
+        const studentId = element.dataset.studentId;
+        updateStudentTotalAndGrade(studentId);
+      }
+    });
+    showMessage('All grades calculated successfully!', 'is-success');
+  });
+
+  // Clear all button
+  document.getElementById('clear-all-btn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to clear all scores? This action cannot be undone.')) {
+      document.querySelectorAll('.ca-score, .exam-score').forEach(input => {
+        input.value = '';
+      });
+      document.querySelectorAll('.remark-select').forEach(select => {
+        select.value = '';
+      });
+      document.querySelectorAll('.total-score').forEach(span => {
+        span.textContent = '0.0';
+      });
+      document.querySelectorAll('.grade-tag').forEach(span => {
+        span.textContent = 'F';
+        span.className = 'tag is-danger';
+      });
+      showMessage('All scores cleared', 'is-info');
+    }
+  });
+
+  // Save all scores form submission
+  document.getElementById('scores-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const scores = [];
+    
+    // Collect all scores data
+    document.querySelectorAll('[data-student-id]').forEach(element => {
+      if (element.classList.contains('ca-score')) {
+        const studentId = element.dataset.studentId;
+        const caScore = element.value;
+        const examScore = document.querySelector(`.exam-score[data-student-id="${studentId}"]`).value;
+        const remark = document.querySelector(`.remark-select[data-student-id="${studentId}"]`).value;
+        
+        if (caScore || examScore) {
+          scores.push({
+            student_id: studentId,
+            ca_score: caScore || 0,
+            exam_score: examScore || 0,
+            remark: remark
+          });
+        }
+      }
+    });
+
+    const data = {
+      class_id: formData.get('class_id'),
+      subject_id: formData.get('subject_id'),
+      academic_year: formData.get('academic_year'),
+      term: formData.get('term'),
+      scores: scores
+    };
+
+    // Submit scores
+    fetch('/teacher/scores/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        showMessage(`Successfully saved scores for ${scores.length} students!`, 'is-success');
+        document.getElementById('save-all-btn').disabled = true;
+        
+        // Reload page after a short delay to show updated data
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        showMessage('Failed to save some scores. Please check the data and try again.', 'is-danger');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessage('An error occurred while saving scores.', 'is-danger');
+    });
+  });
+
+  // Update single score
+  document.querySelectorAll('.update-single-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const scoreId = this.dataset.scoreId;
+      const row = this.closest('tr');
+      const studentId = row.dataset.studentId;
+      
+      const caScore = row.querySelector('.ca-score').value;
+      const examScore = row.querySelector('.exam-score').value;
+      const remark = row.querySelector('.remark-select').value;
+
+      fetch(`/teacher/scores/update/${scoreId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ca_score: caScore || 0,
+          exam_score: examScore || 0,
+          remark: remark
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          showMessage('Score updated successfully!', 'is-success');
+          updateStudentTotalAndGrade(studentId);
+        } else {
+          showMessage('Failed to update score.', 'is-danger');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showMessage('An error occurred while updating the score.', 'is-danger');
+      });
+    });
+  });
+
+  // Show message function
+  function showMessage(message, type) {
+    messageContainer.innerHTML = `
+      <div class="notification ${type} is-light">
+        <button class="delete"></button>
+        <span>${message}</span>
+      </div>
+    `;
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      messageContainer.innerHTML = '';
+    }, 5000);
+
+    // Add click event to close button
+    messageContainer.querySelector('.delete').addEventListener('click', function() {
+      messageContainer.innerHTML = '';
+    });
+  }
+});
+</script>
+
+<%- include('../../partials/footer') %>

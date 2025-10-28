@@ -6,31 +6,63 @@ const isAuthenticated = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  if (req.session && req.session.userId && req.session.role === 'admin') {
-    return next();
+  console.log('isAdmin check - Session:', req.session); // Debug log
+  
+  if (!req.session || !req.session.userId) {
+    return res.redirect('/auth/login');
   }
-  res.status(403).render('error', {
-    message: 'Access Denied',
-    error: { status: 403, stack: 'You do not have permission to access this resource' }
-  });
+  
+  if (req.session.role !== 'admin') {
+    console.log('Access denied - Role:', req.session.role); // Debug log
+    return res.status(403).render('error', {
+      message: 'Access Denied',
+      error: { 
+        status: 403, 
+        stack: `You need administrator privileges. Current role: ${req.session.role || 'none'}` 
+      }
+    });
+  }
+  
+  next();
 };
 
 const isTeacher = (req, res, next) => {
-  if (req.session && req.session.userId && req.session.role === 'teacher') {
-    return next();
+  console.log('isTeacher check - Session:', req.session); // Debug log
+  
+  if (!req.session || !req.session.userId) {
+    return res.redirect('/auth/login');
   }
-  res.status(403).render('error', {
-    message: 'Access Denied',
-    error: { status: 403, stack: 'You do not have permission to access this resource' }
-  });
+  
+  if (req.session.role !== 'teacher') {
+    console.log('Access denied - Role:', req.session.role); // Debug log
+    return res.status(403).render('error', {
+      message: 'Access Denied',
+      error: { 
+        status: 403, 
+        stack: `You need teacher privileges. Current role: ${req.session.role || 'none'}` 
+      }
+    });
+  }
+  
+  next();
 };
 
 const isAdminOrTeacher = (req, res, next) => {
-  if (req.session && req.session.userId &&
-      (req.session.role === 'admin' || req.session.role === 'teacher')) {
-    return next();
+  if (!req.session || !req.session.userId) {
+    return res.redirect('/auth/login');
   }
-  res.redirect('/auth/login');
+  
+  if (req.session.role !== 'admin' && req.session.role !== 'teacher') {
+    return res.status(403).render('error', {
+      message: 'Access Denied',
+      error: { 
+        status: 403, 
+        stack: `You need admin or teacher privileges. Current role: ${req.session.role || 'none'}` 
+      }
+    });
+  }
+  
+  next();
 };
 
 // Attach user info to all requests

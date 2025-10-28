@@ -3,7 +3,16 @@ const { AppError } = require('../middleware/errorHandler');
 
 exports.showLogin = (req, res) => {
   if (req.session && req.session.userId) {
-    return res.redirect('/dashboard');
+    // Redirect based on user role
+    if (req.session.role === 'admin') {
+      return res.redirect('/admin/dashboard');
+    } else if (req.session.role === 'teacher') {
+      return res.redirect('/teacher/dashboard');
+    } else {
+      // Fallback: logout invalid sessions
+      req.session.destroy();
+      return res.render('auth/login', { error: 'Invalid session. Please login again.' });
+    }
   }
   res.render('auth/login', { error: null });
 };
@@ -48,13 +57,20 @@ exports.login = async (req, res, next) => {
       return res.redirect('/admin/dashboard');
     } else if (user.role === 'teacher') {
       return res.redirect('/teacher/dashboard');
+    } else {
+      // Handle invalid roles
+      return res.render('auth/login', {
+        error: 'Invalid user role. Please contact administrator.',
+      });
     }
 
-    res.redirect('/dashboard');
   } catch (error) {
     next(error);
   }
 };
+
+
+
 
 exports.logout = (req, res) => {
   req.session.destroy((err) => {

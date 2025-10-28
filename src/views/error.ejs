@@ -1,22 +1,165 @@
 <%- include('partials/header') %>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
-            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 5rem;"></i>
-            <h1 class="mt-3"><%= message %></h1>
-            <p class="text-muted"><%= error.status || 500 %> Error</p>
-            <% if (error.stack && process.env.NODE_ENV === 'development') { %>
-            <div class="alert alert-warning text-start mt-4">
-                <h5>Stack Trace (Development Only):</h5>
-                <pre><%= error.stack %></pre>
+<section class="hero is-fullheight-with-navbar">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-6-desktop is-8-tablet">
+          
+          <!-- Error Icon and Status -->
+          <div class="has-text-centered mb-6">
+            <% 
+              const status = error.status || 500;
+              let iconClass = 'mdi-alert-circle';
+              let colorClass = 'has-text-danger';
+              
+              if (status === 404) {
+                iconClass = 'mdi-file-question-outline';
+                colorClass = 'has-text-warning';
+              } else if (status === 403) {
+                iconClass = 'mdi-lock-outline';
+                colorClass = 'has-text-danger';
+              } else if (status === 401) {
+                iconClass = 'mdi-account-lock-outline';
+                colorClass = 'has-text-warning';
+              } else if (status >= 500) {
+                iconClass = 'mdi-server-network-off';
+                colorClass = 'has-text-danger';
+              }
+            %>
+            
+            <span class="icon is-large <%= colorClass %> mb-4">
+              <i class="mdi <%= iconClass %>" style="font-size: 6rem;"></i>
+            </span>
+            
+            <h1 class="title is-1 <%= colorClass %>">
+              <%= status %>
+            </h1>
+            
+            <h2 class="subtitle is-3 has-text-grey-dark">
+              <%= message || 'Something went wrong' %>
+            </h2>
+          </div>
+
+          <!-- Error Description Box -->
+          <div class="box has-background-light">
+            <div class="content has-text-centered">
+              <% if (status === 404) { %>
+                <p class="is-size-5">The page you're looking for doesn't exist.</p>
+                <p class="has-text-grey">It might have been moved, deleted, or you entered the wrong URL.</p>
+              <% } else if (status === 403) { %>
+                <p class="is-size-5">You don't have permission to access this resource.</p>
+                <p class="has-text-grey">Please contact your administrator if you believe this is an error.</p>
+              <% } else if (status === 401) { %>
+                <p class="is-size-5">You need to be logged in to access this page.</p>
+                <p class="has-text-grey">Please log in with your credentials to continue.</p>
+              <% } else if (status >= 500) { %>
+                <p class="is-size-5">We're experiencing technical difficulties.</p>
+                <p class="has-text-grey">Our team has been notified and is working to fix this issue.</p>
+              <% } else { %>
+                <p class="is-size-5">An unexpected error occurred.</p>
+                <p class="has-text-grey">Please try again or contact support if the problem persists.</p>
+              <% } %>
             </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="buttons is-centered mt-5">
+            <% if (status === 401) { %>
+              <a href="/auth/login" class="button is-primary is-large">
+                <span class="icon"><i class="mdi mdi-login"></i></span>
+                <span>Login</span>
+              </a>
+            <% } else if (typeof user !== 'undefined' && user) { %>
+              <% if (user.role === 'admin') { %>
+                <a href="/admin/dashboard" class="button is-primary is-large">
+                  <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>
+                  <span>Go to Dashboard</span>
+                </a>
+              <% } else if (user.role === 'teacher') { %>
+                <a href="/teacher/dashboard" class="button is-primary is-large">
+                  <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>
+                  <span>Go to Dashboard</span>
+                </a>
+              <% } else { %>
+                <a href="/" class="button is-primary is-large">
+                  <span class="icon"><i class="mdi mdi-home"></i></span>
+                  <span>Go Home</span>
+                </a>
+              <% } %>
+            <% } else { %>
+              <a href="/" class="button is-primary is-large">
+                <span class="icon"><i class="mdi mdi-home"></i></span>
+                <span>Go Home</span>
+              </a>
             <% } %>
-            <a href="/" class="btn btn-primary mt-3">
-                <i class="bi bi-house"></i> Go Home
-            </a>
+            
+            <button onclick="history.back()" class="button is-light is-large">
+              <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+              <span>Go Back</span>
+            </button>
+          </div>
+
+          <!-- Additional Help -->
+          <div class="has-text-centered mt-5">
+            <p class="is-size-7 has-text-grey">
+              Error Code: <code><%= status %></code> • 
+              Time: <%= new Date().toLocaleString() %>
+              <% if (typeof user !== 'undefined' && user) { %>
+                • User: <%= user.email %>
+              <% } %>
+            </p>
+          </div>
+
+          <!-- Development Stack Trace -->
+          <% if (error.stack && process.env.NODE_ENV === 'development') { %>
+            <div class="box mt-6 has-background-warning-light">
+              <div class="content">
+                <h4 class="title is-5 has-text-warning-dark">
+                  <span class="icon"><i class="mdi mdi-bug"></i></span>
+                  Stack Trace (Development Only)
+                </h4>
+                <pre class="has-background-white p-4" style="border-radius: 6px; border: 1px solid #dbdbdb; font-size: 0.8rem; overflow-x: auto;"><%= error.stack %></pre>
+              </div>
+            </div>
+          <% } %>
+
         </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<!-- Add some custom animations -->
+<style>
+  .hero-body {
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .icon.is-large {
+    animation: bounce 1s ease-in-out;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+  
+  .box {
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button:hover {
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+  }
+</style>
 
 <%- include('partials/footer') %>

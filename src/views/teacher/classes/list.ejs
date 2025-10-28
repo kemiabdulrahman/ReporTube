@@ -1,0 +1,135 @@
+<%- include('../../partials/header', { title: 'My Classes' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+          <span>My Classes</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <a href="/teacher/dashboard" class="button is-light">
+          <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Classes List -->
+    <div class="box">
+      <% if (classes.length === 0) { %>
+        <div class="notification is-info is-light">
+          <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+          <span>No classes assigned yet. Contact your administrator to get classes assigned.</span>
+        </div>
+      <% } else { %>
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th>
+                  <span class="icon"><i class="mdi mdi-school"></i></span>
+                  <span>Class Name</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-stairs"></i></span>
+                  <span>Level</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-book-outline"></i></span>
+                  <span>Subject</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-account-group"></i></span>
+                  <span>Students</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-cog"></i></span>
+                  <span>Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% classes.forEach(function(classItem) { %>
+                <tr>
+                  <td>
+                    <strong><%= classItem.name %></strong>
+                  </td>
+                  <td>
+                    <span class="tag is-info is-light"><%= classItem.level %></span>
+                  </td>
+                  <td>
+                    <span class="icon"><i class="mdi mdi-book-outline"></i></span>
+                    <span><%= classItem.subject_name || 'N/A' %></span>
+                  </td>
+                  <td>
+                    <span class="tag is-primary is-light">
+                      <span class="icon"><i class="mdi mdi-account-group"></i></span>
+                      <span><%= classItem.student_count || 0 %></span>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="buttons are-small">
+                      <a href="/teacher/classes/<%= classItem.id %>/students/<%= classItem.subject_id %>" 
+                         class="button is-info is-outlined" 
+                         title="View Students">
+                        <span class="icon"><i class="mdi mdi-account-group-outline"></i></span>
+                        <span>Students</span>
+                      </a>
+                      <a href="/teacher/scores/entry?class_id=<%= classItem.id %>&subject_id=<%= classItem.subject_id %>&academic_year=2024&term=1" 
+                         class="button is-primary is-outlined" 
+                         title="Enter Scores">
+                        <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+                        <span>Scores</span>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Quick Stats -->
+    <% if (classes.length > 0) { %>
+      <div class="columns">
+        <div class="column is-4">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-primary">
+              <i class="mdi mdi-school mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= classes.length %></p>
+            <p class="subtitle is-6">Total Classes</p>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-info">
+              <i class="mdi mdi-account-group mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= classes.reduce((sum, cls) => sum + parseInt(cls.student_count || 0), 0) %></p>
+            <p class="subtitle is-6">Total Students</p>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="box has-text-centered">
+            <span class="icon is-large has-text-success">
+              <i class="mdi mdi-book-multiple mdi-48px"></i>
+            </span>
+            <p class="title is-4"><%= [...new Set(classes.map(c => c.subject_id))].length %></p>
+            <p class="subtitle is-6">Subjects</p>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

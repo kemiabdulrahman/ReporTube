@@ -1,0 +1,322 @@
+<%- include('../../partials/header', { title: 'Send Reports to Parents' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-email-send-outline"></i></span>
+          <span>Send Reports to Parents</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <a href="/admin/dashboard" class="button is-light">
+          <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <% if (message) { %>
+      <div class="notification is-info is-light">
+        <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+        <span><%= message %></span>
+      </div>
+    <% } %>
+
+    <!-- Results Display -->
+    <% if (typeof results !== 'undefined' && results) { %>
+      <div class="box mb-5">
+        <h3 class="title is-4 mb-4">
+          <span class="icon"><i class="mdi mdi-chart-line"></i></span>
+          <span>Email Sending Results</span>
+        </h3>
+        
+        <div class="columns mb-4">
+          <div class="column is-4">
+            <div class="box has-text-centered has-background-success-light">
+              <span class="icon is-large has-text-success">
+                <i class="mdi mdi-check-circle mdi-48px"></i>
+              </span>
+              <p class="title is-4"><%= results.filter(r => r.success).length %></p>
+              <p class="subtitle is-6">Successful</p>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="box has-text-centered has-background-danger-light">
+              <span class="icon is-large has-text-danger">
+                <i class="mdi mdi-close-circle mdi-48px"></i>
+              </span>
+              <p class="title is-4"><%= results.filter(r => !r.success).length %></p>
+              <p class="subtitle is-6">Failed</p>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="box has-text-centered has-background-info-light">
+              <span class="icon is-large has-text-info">
+                <i class="mdi mdi-account-group mdi-48px"></i>
+              </span>
+              <p class="title is-4"><%= results.length %></p>
+              <p class="subtitle is-6">Total Students</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Results -->
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Status</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% results.forEach(function(result) { %>
+                <tr>
+                  <td>
+                    <div class="media">
+                      <div class="media-left">
+                        <span class="icon has-text-primary">
+                          <i class="mdi mdi-account-circle"></i>
+                        </span>
+                      </div>
+                      <div class="media-content">
+                        <strong><%= result.student %></strong>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <% if (result.success) { %>
+                      <span class="tag is-success">
+                        <span class="icon"><i class="mdi mdi-check-circle"></i></span>
+                        <span>Success</span>
+                      </span>
+                    <% } else { %>
+                      <span class="tag is-danger">
+                        <span class="icon"><i class="mdi mdi-close-circle"></i></span>
+                        <span>Failed</span>
+                      </span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <span class="<%= result.success ? 'has-text-success' : 'has-text-danger' %>">
+                      <%= result.message %>
+                    </span>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Send Reports Form -->
+    <div class="box">
+      <h3 class="title is-4 mb-4">
+        <span class="icon"><i class="mdi mdi-email-multiple-outline"></i></span>
+        <span>Send Academic Reports</span>
+      </h3>
+
+      <form action="/admin/reports/send" method="POST" onsubmit="return confirmSend()">
+
+        <!-- Class Selection -->
+        <div class="field">
+          <label class="label">Select Class</label>
+          <div class="control has-icons-left">
+            <div class="select is-fullwidth">
+              <select name="class_id" required onchange="updateClassInfo()">
+                <option value="">Choose a class to send reports</option>
+                <% classes.forEach(function(classItem) { %>
+                  <option value="<%= classItem.id %>" 
+                          data-student-count="<%= classItem.student_count || 0 %>"
+                          data-class-name="<%= classItem.name %>"
+                          data-level="<%= classItem.level %>">
+                    <%= classItem.name %> - <%= classItem.level %> (<%= classItem.student_count || 0 %> students)
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+            <span class="icon is-left"><i class="mdi mdi-school"></i></span>
+          </div>
+          <p class="help">Select the class for which you want to send reports to parents</p>
+        </div>
+
+        <!-- Academic Year -->
+        <div class="field">
+          <label class="label">Academic Year</label>
+          <div class="control has-icons-left">
+            <div class="select is-fullwidth">
+              <select name="academic_year" required>
+                <option value="">Select academic year</option>
+                <option value="2023">2023</option>
+                <option value="2024" selected>2024</option>
+                <option value="2025">2025</option>
+              </select>
+            </div>
+            <span class="icon is-left"><i class="mdi mdi-calendar-range"></i></span>
+          </div>
+        </div>
+
+        <!-- Term -->
+        <div class="field">
+          <label class="label">Term</label>
+          <div class="control has-icons-left">
+            <div class="select is-fullwidth">
+              <select name="term" required>
+                <option value="">Select term</option>
+                <option value="1">Term 1</option>
+                <option value="2">Term 2</option>
+                <option value="3">Term 3</option>
+              </select>
+            </div>
+            <span class="icon is-left"><i class="mdi mdi-calendar"></i></span>
+          </div>
+        </div>
+
+        <!-- Class Information Display -->
+        <div id="class-info" class="notification is-info is-light" style="display: none;">
+          <div class="content">
+            <p><strong>Selected Class Information:</strong></p>
+            <ul>
+              <li><strong>Class Name:</strong> <span id="selected-class-name">-</span></li>
+              <li><strong>Level:</strong> <span id="selected-class-level">-</span></li>
+              <li><strong>Number of Students:</strong> <span id="selected-student-count">0</span></li>
+            </ul>
+            <p><em>Reports will be generated and sent to all parent emails on file for this class.</em></p>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="field is-grouped is-grouped-right">
+          <div class="control">
+            <button type="submit" class="button is-primary is-large">
+              <span class="icon"><i class="mdi mdi-email-send"></i></span>
+              <span>Send Reports to Parents</span>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Information Box -->
+    <div class="box has-background-light">
+      <h4 class="title is-5 mb-3">
+        <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+        <span>Important Information</span>
+      </h4>
+      
+      <div class="content">
+        <h6 class="title is-6">Before sending reports:</h6>
+        <ul>
+          <li>Ensure all scores for the selected term have been entered and approved</li>
+          <li>Verify that parent email addresses are correct and up-to-date</li>
+          <li>Check that all teachers have completed score entry for their subjects</li>
+          <li>Review any pending score approvals in the Score Review section</li>
+        </ul>
+
+        <h6 class="title is-6">What happens when you send reports:</h6>
+        <ul>
+          <li>PDF reports are automatically generated for each student</li>
+          <li>Reports are sent via email to the parent/guardian email addresses</li>
+          <li>Students without parent emails will be listed as failed</li>
+          <li>You'll receive a detailed summary of successful and failed deliveries</li>
+        </ul>
+
+        <h6 class="title is-6">Email content includes:</h6>
+        <ul>
+          <li>Student's complete academic report for the selected term</li>
+          <li>Subject-wise performance breakdown</li>
+          <li>Grade calculations and teacher remarks</li>
+          <li>Class position and overall performance summary</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="box">
+      <h3 class="title is-5 mb-4">
+        <span class="icon"><i class="mdi mdi-lightning-bolt-outline"></i></span>
+        <span>Related Actions</span>
+      </h3>
+      
+      <div class="buttons">
+        <a href="/admin/scores" class="button is-warning">
+          <span class="icon"><i class="mdi mdi-clipboard-check-outline"></i></span>
+          <span>Review Pending Scores</span>
+        </a>
+        <a href="/admin/students" class="button is-info">
+          <span class="icon"><i class="mdi mdi-account-group"></i></span>
+          <span>Update Parent Emails</span>
+        </a>
+        <a href="/admin/classes" class="button is-success">
+          <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+          <span>View Classes</span>
+        </a>
+        <button class="button is-light" onclick="downloadSampleReport()">
+          <span class="icon"><i class="mdi mdi-download"></i></span>
+          <span>Download Sample Report</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+function updateClassInfo() {
+  const classSelect = document.querySelector('select[name="class_id"]');
+  const selectedOption = classSelect.options[classSelect.selectedIndex];
+  const classInfoDiv = document.getElementById('class-info');
+  
+  if (selectedOption.value) {
+    document.getElementById('selected-class-name').textContent = selectedOption.dataset.className;
+    document.getElementById('selected-class-level').textContent = selectedOption.dataset.level;
+    document.getElementById('selected-student-count').textContent = selectedOption.dataset.studentCount;
+    classInfoDiv.style.display = 'block';
+  } else {
+    classInfoDiv.style.display = 'none';
+  }
+}
+
+function confirmSend() {
+  const classSelect = document.querySelector('select[name="class_id"]');
+  const academicYearSelect = document.querySelector('select[name="academic_year"]');
+  const termSelect = document.querySelector('select[name="term"]');
+  
+  if (!classSelect.value || !academicYearSelect.value || !termSelect.value) {
+    alert('Please select class, academic year, and term before sending reports.');
+    return false;
+  }
+  
+  const selectedOption = classSelect.options[classSelect.selectedIndex];
+  const studentCount = selectedOption.dataset.studentCount;
+  const className = selectedOption.dataset.className;
+  const academicYear = academicYearSelect.value;
+  const term = termSelect.value;
+  
+  const confirmMessage = `Are you sure you want to send reports for:
+  
+Class: ${className}
+Academic Year: ${academicYear}
+Term: Term ${term}
+Students: ${studentCount}
+
+This will generate and email PDF reports to all parent email addresses on file.`;
+  
+  return confirm(confirmMessage);
+}
+
+function downloadSampleReport() {
+  // In a real implementation, this would download a sample report
+  alert('Sample report download functionality to be implemented');
+}
+</script>
+
+<%- include('../../partials/footer') %>

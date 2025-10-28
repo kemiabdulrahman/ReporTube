@@ -13,59 +13,191 @@
 
   <style>
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #00d084 0%, #00b894 25%, #00a085 75%, #008f72 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Segoe UI', Roboto, sans-serif;
+      position: relative;
+    }
+
+    /* Animated background pattern */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
     }
 
     .login-card {
       background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      max-width: 420px;
+      border-radius: 20px;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      max-width: 440px;
       width: 100%;
       overflow: hidden;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(10px);
     }
 
     .login-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #00d084 0%, #00b894 50%, #00a085 100%);
       color: #fff;
       text-align: center;
-      padding: 2rem 1rem 1.5rem;
+      padding: 2.5rem 1rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
     }
 
     .login-header .icon {
-      font-size: 3rem;
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .login-header .title {
+      position: relative;
+      z-index: 2;
     }
 
     .login-body {
-      padding: 2rem;
+      padding: 2.5rem;
+    }
+
+    .field .label {
+      color: #2d3748;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .input {
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+    }
+
+    .input:focus {
+      border-color: #00d084;
+      box-shadow: 0 0 0 3px rgba(0, 208, 132, 0.1);
     }
 
     .button.is-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #00d084 0%, #00b894 50%, #00a085 100%);
       border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button.is-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .button.is-primary:hover::before {
+      left: 100%;
     }
 
     .button.is-primary:hover {
-      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 208, 132, 0.3);
+    }
+
+    .notification.is-danger {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      color: #dc2626;
     }
 
     .footer-note {
-      background: #f9f9f9;
-      padding: 1rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 1.25rem;
       text-align: center;
       font-size: 0.85rem;
-      color: #888;
+      color: #6c757d;
+      border-top: 1px solid #e9ecef;
     }
 
+    /* Success animation for future use */
+    .success-animation {
+      animation: successBounce 0.6s ease-out;
+    }
+
+    @keyframes successBounce {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Mobile responsiveness */
     @media (max-width: 480px) {
       .login-body {
-        padding: 1.5rem;
+        padding: 2rem 1.5rem;
       }
+      
+      .login-card {
+        margin: 1rem;
+        border-radius: 15px;
+      }
+      
+      .login-header {
+        padding: 2rem 1rem 1.5rem;
+      }
+    }
+
+    /* Loading state */
+    .button.is-loading::after {
+      border-color: transparent transparent #00d084 #00d084 !important;
     }
   </style>
 </head>
@@ -75,54 +207,109 @@
       <span class="icon">
         <i class="mdi mdi-file-document-outline"></i>
       </span>
-      <h2 class="title is-4 mt-2 has-text-white">ReporTube</h2>
-      <p class="is-size-6">Academic Reporting Platform</p>
+      <h2 class="title is-3 mt-2 has-text-white mb-2">ReporTube</h2>
+      <p class="is-size-6 has-text-white-bis">Academic Reporting Platform</p>
     </div>
 
     <div class="login-body">
-      <h4 class="title is-5 has-text-centered mb-4">Login to Your Account</h4>
+      <h4 class="title is-4 has-text-centered mb-5 has-text-grey-dark">
+        Welcome Back
+      </h4>
 
       <% if (error) { %>
       <div class="notification is-danger is-light">
-        <i class="mdi mdi-alert-circle-outline"></i> <%= error %>
+        <span class="icon">
+          <i class="mdi mdi-alert-circle-outline"></i>
+        </span>
+        <span><%= error %></span>
       </div>
       <% } %>
 
-      <form action="/auth/login" method="POST">
+      <form action="/auth/login" method="POST" id="loginForm">
         <div class="field">
-          <label class="label"><i class="mdi mdi-email-outline"></i> Email Address</label>
+          <label class="label">
+            <span class="icon-text">
+              <span class="icon"><i class="mdi mdi-email-outline"></i></span>
+              <span>Email Address</span>
+            </span>
+          </label>
           <div class="control has-icons-left">
-            <input class="input" type="email" id="email" name="email" placeholder="you@example.com" required autofocus>
-            <span class="icon is-small is-left">
+            <input class="input is-medium" type="email" id="email" name="email" 
+                   placeholder="Enter your email address" required autofocus>
+            <span class="icon is-medium is-left">
               <i class="mdi mdi-email-outline"></i>
             </span>
           </div>
         </div>
 
         <div class="field">
-          <label class="label"><i class="mdi mdi-lock-outline"></i> Password</label>
+          <label class="label">
+            <span class="icon-text">
+              <span class="icon"><i class="mdi mdi-lock-outline"></i></span>
+              <span>Password</span>
+            </span>
+          </label>
           <div class="control has-icons-left">
-            <input class="input" type="password" id="password" name="password" placeholder="••••••••" required>
-            <span class="icon is-small is-left">
+            <input class="input is-medium" type="password" id="password" name="password" 
+                   placeholder="Enter your password" required>
+            <span class="icon is-medium is-left">
               <i class="mdi mdi-lock-outline"></i>
             </span>
           </div>
         </div>
 
-        <div class="field mt-5">
+        <div class="field mt-6">
           <div class="control">
-            <button type="submit" class="button is-primary is-fullwidth is-medium">
+            <button type="submit" class="button is-primary is-fullwidth is-large" id="loginBtn">
               <span class="icon"><i class="mdi mdi-login"></i></span>
-              <span>Login</span>
+              <span>Sign In</span>
             </button>
           </div>
         </div>
       </form>
+
+      <div class="has-text-centered mt-4">
+        <p class="is-size-7 has-text-grey">
+          Secure login powered by ReporTube
+        </p>
+      </div>
     </div>
 
     <div class="footer-note">
-      &copy; <%= new Date().getFullYear() %> ReporTube — All rights reserved.
+      <span class="icon-text">
+        <span class="icon"><i class="mdi mdi-shield-check-outline"></i></span>
+        <span>&copy; <%= new Date().getFullYear() %> ReporTube — Secure & Reliable</span>
+      </span>
     </div>
   </div>
+
+  <script>
+    // Add loading state to login button
+    document.getElementById('loginForm').addEventListener('submit', function() {
+      const btn = document.getElementById('loginBtn');
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+    });
+
+    // Add enter key support
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('loginForm').submit();
+      }
+    });
+
+    // Focus animation
+    const inputs = document.querySelectorAll('.input');
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentNode.parentNode.style.transform = 'scale(1.02)';
+        this.parentNode.parentNode.style.transition = 'transform 0.2s ease';
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentNode.parentNode.style.transform = 'scale(1)';
+      });
+    });
+  </script>
 </body>
 </html>

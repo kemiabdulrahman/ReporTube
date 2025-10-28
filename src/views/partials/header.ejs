@@ -12,8 +12,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css">
 
   <!-- Font Awesome (optional, for extra icons) -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="/css/style.css">
@@ -23,10 +22,12 @@
   <% if (typeof user !== 'undefined' && user) { %>
   <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="/">
+      <a class="navbar-item" href="<%= user.role === 'admin' ? '/admin/dashboard' : '/teacher/dashboard' %>">
         <span class="icon-text">
-          <span class="icon"><i class="mdi mdi-file-document-outline"></i></span>
-          <span class="has-text-weight-bold">ReporTube</span>
+          <span class="icon is-medium">
+            <i class="mdi mdi-file-document-outline mdi-24px"></i>
+          </span>
+          <span class="has-text-weight-bold is-size-4">ReporTube</span>
         </span>
       </a>
 
@@ -41,30 +42,156 @@
     <div id="navbarMain" class="navbar-menu">
       <div class="navbar-start">
         <% if (user.role === 'admin') { %>
-          <a class="navbar-item" href="/admin/dashboard"><i class="mdi mdi-speedometer"></i>&nbsp;Dashboard</a>
-          <a class="navbar-item" href="/admin/classes"><i class="mdi mdi-office-building"></i>&nbsp;Classes</a>
-          <a class="navbar-item" href="/admin/students"><i class="mdi mdi-account-group"></i>&nbsp;Students</a>
-          <a class="navbar-item" href="/admin/users"><i class="mdi mdi-account-badge"></i>&nbsp;Users</a>
-          <a class="navbar-item" href="/admin/subjects"><i class="mdi mdi-book-open-variant"></i>&nbsp;Subjects</a>
-          <a class="navbar-item" href="/admin/scores"><i class="mdi mdi-chart-bar"></i>&nbsp;Scores</a>
-          <a class="navbar-item" href="/admin/reports/send"><i class="mdi mdi-email-send-outline"></i>&nbsp;Send Reports</a>
+          <a class="navbar-item" href="/admin/dashboard">
+            <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>
+            <span>Dashboard</span>
+          </a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              <span class="icon"><i class="mdi mdi-cog"></i></span>
+              <span>Management</span>
+            </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="/admin/classes">
+                <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+                <span>Classes</span>
+              </a>
+              <a class="navbar-item" href="/admin/students">
+                <span class="icon"><i class="mdi mdi-account-group"></i></span>
+                <span>Students</span>
+              </a>
+              <a class="navbar-item" href="/admin/users">
+                <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
+                <span>Users</span>
+              </a>
+              <a class="navbar-item" href="/admin/subjects">
+                <span class="icon"><i class="mdi mdi-book-multiple-outline"></i></span>
+                <span>Subjects</span>
+              </a>
+            </div>
+          </div>
+          <a class="navbar-item" href="/admin/scores">
+            <span class="icon"><i class="mdi mdi-clipboard-list-outline"></i></span>
+            <span>Scores</span>
+          </a>
+          <a class="navbar-item" href="/admin/reports/send">
+            <span class="icon"><i class="mdi mdi-email-send-outline"></i></span>
+            <span>Reports</span>
+          </a>
         <% } else if (user.role === 'teacher') { %>
-          <a class="navbar-item" href="/teacher/dashboard"><i class="mdi mdi-speedometer"></i>&nbsp;Dashboard</a>
-          <a class="navbar-item" href="/teacher/classes"><i class="mdi mdi-teach"></i>&nbsp;My Classes</a>
-          <a class="navbar-item" href="/teacher/scores/my-classes"><i class="mdi mdi-pencil"></i>&nbsp;Enter Scores</a>
+          <a class="navbar-item" href="/teacher/dashboard">
+            <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>
+            <span>Dashboard</span>
+          </a>
+          <a class="navbar-item" href="/teacher/classes">
+            <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+            <span>My Classes</span>
+          </a>
+          <a class="navbar-item" href="/teacher/scores/my-classes">
+            <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+            <span>Enter Scores</span>
+          </a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              <span class="icon"><i class="mdi mdi-file-document-outline"></i></span>
+              <span>Reports</span>
+            </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="/teacher/reports/student">
+                <span class="icon"><i class="mdi mdi-account-outline"></i></span>
+                <span>Student Reports</span>
+              </a>
+              <hr class="navbar-divider">
+              <a class="navbar-item" href="/teacher/reports/download">
+                <span class="icon"><i class="mdi mdi-download"></i></span>
+                <span>Download Reports</span>
+              </a>
+            </div>
+          </div>
         <% } %>
       </div>
 
       <div class="navbar-end">
+        <!-- Notifications (optional) -->
+        <div class="navbar-item">
+          <div class="buttons">
+            <button class="button is-primary is-outlined is-small">
+              <span class="icon">
+                <i class="mdi mdi-bell-outline"></i>
+              </span>
+              <span class="is-hidden-mobile">Notifications</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- User Menu -->
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
-            <span class="icon"><i class="mdi mdi-account-circle"></i></span>
-            &nbsp;<%= user.full_name %>
+            <span class="icon">
+              <i class="mdi mdi-account-circle mdi-24px"></i>
+            </span>
+            <span class="is-hidden-mobile"><%= user.full_name %></span>
+            <span class="is-hidden-desktop">Profile</span>
           </a>
           <div class="navbar-dropdown is-right">
-            <a class="navbar-item" href="/auth/change-password">Change Password</a>
+            <div class="navbar-item">
+              <div class="content">
+                <p class="has-text-weight-bold"><%= user.full_name %></p>
+                <p class="is-size-7 has-text-grey">
+                  <span class="tag is-<%= user.role === 'admin' ? 'danger' : 'primary' %> is-light">
+                    <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
+                  </span>
+                </p>
+              </div>
+            </div>
             <hr class="navbar-divider">
-            <a class="navbar-item" href="/auth/logout">Logout</a>
+            <a class="navbar-item" href="/auth/change-password">
+              <span class="icon"><i class="mdi mdi-key-outline"></i></span>
+              <span>Change Password</span>
+            </a>
+            <a class="navbar-item" href="/profile">
+              <span class="icon"><i class="mdi mdi-account-edit-outline"></i></span>
+              <span>Edit Profile</span>
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item has-text-danger" href="/auth/logout">
+              <span class="icon"><i class="mdi mdi-logout"></i></span>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <% } else { %>
+  <!-- Guest Navigation -->
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <span class="icon-text">
+          <span class="icon is-medium">
+            <i class="mdi mdi-file-document-outline mdi-24px has-text-primary"></i>
+          </span>
+          <span class="has-text-weight-bold is-size-4 has-text-primary">ReporTube</span>
+        </span>
+      </a>
+
+      <!-- Mobile burger -->
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarGuest">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navbarGuest" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-primary" href="/auth/login">
+              <span class="icon"><i class="mdi mdi-login"></i></span>
+              <span>Login</span>
+            </a>
           </div>
         </div>
       </div>
@@ -72,4 +199,4 @@
   </nav>
   <% } %>
 
-  <main class="<%= typeof user !== 'undefined' && user ? 'section' : '' %>">
+  <main class="<%= typeof user !== 'undefined' && user ? '' : 'hero is-fullheight-with-navbar' %>">

@@ -1,0 +1,178 @@
+<%- include('../../partials/header', { title: 'Select Class for Score Entry' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+          <span>Enter Student Scores</span>
+        </h2>
+        <p class="subtitle is-5">Select a class to enter or update student scores</p>
+      </div>
+      <div class="level-right">
+        <a href="/teacher/dashboard" class="button is-light">
+          <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="notification is-info is-light mb-5">
+      <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+      <span>Select a class below to enter or update student scores. You can enter scores for different terms and academic years.</span>
+    </div>
+
+    <!-- Classes List for Score Entry -->
+    <div class="box">
+      <% if (classes.length === 0) { %>
+        <div class="notification is-warning is-light">
+          <span class="icon"><i class="mdi mdi-alert-outline"></i></span>
+          <span>No classes assigned yet. Contact your administrator to get classes assigned.</span>
+        </div>
+      <% } else { %>
+        <div class="columns is-multiline">
+          <% classes.forEach(function(classItem) { %>
+            <div class="column is-6">
+              <div class="card">
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-left">
+                      <span class="icon is-large has-text-primary">
+                        <i class="mdi mdi-school mdi-36px"></i>
+                      </span>
+                    </div>
+                    <div class="media-content">
+                      <p class="title is-4"><%= classItem.name %></p>
+                      <p class="subtitle is-6"><%= classItem.level %></p>
+                      <div class="tags">
+                        <span class="tag is-info">
+                          <span class="icon"><i class="mdi mdi-book-outline"></i></span>
+                          <span><%= classItem.subject_name || 'Subject' %></span>
+                        </span>
+                        <span class="tag is-primary">
+                          <span class="icon"><i class="mdi mdi-account-group"></i></span>
+                          <span><%= classItem.student_count || 0 %> students</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-content">
+                  <div class="field">
+                    <label class="label">Select Academic Year & Term</label>
+                    <div class="field has-addons">
+                      <div class="control">
+                        <div class="select">
+                          <select class="academic-year-select" data-class-id="<%= classItem.id %>" data-subject-id="<%= classItem.subject_id %>">
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2025">2025</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="control">
+                        <div class="select">
+                          <select class="term-select" data-class-id="<%= classItem.id %>" data-subject-id="<%= classItem.subject_id %>">
+                            <option value="1">Term 1</option>
+                            <option value="2">Term 2</option>
+                            <option value="3">Term 3</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="control">
+                        <button class="button is-primary enter-scores-btn" 
+                                data-class-id="<%= classItem.id %>" 
+                                data-subject-id="<%= classItem.subject_id %>">
+                          <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+                          <span>Enter Scores</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <footer class="card-footer">
+                  <a href="/teacher/classes/<%= classItem.id %>/students/<%= classItem.subject_id %>" class="card-footer-item">
+                    <span class="icon"><i class="mdi mdi-account-group-outline"></i></span>
+                    <span>View Students</span>
+                  </a>
+                  <a href="/teacher/scores/entry?class_id=<%= classItem.id %>&subject_id=<%= classItem.subject_id %>&academic_year=2024&term=1" class="card-footer-item">
+                    <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+                    <span>Quick Entry (Current Term)</span>
+                  </a>
+                </footer>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Quick Stats -->
+    <% if (classes.length > 0) { %>
+      <div class="columns">
+        <div class="column is-12">
+          <div class="box has-background-light">
+            <h4 class="title is-5 mb-3">
+              <span class="icon"><i class="mdi mdi-chart-line"></i></span>
+              <span>Quick Overview</span>
+            </h4>
+            <div class="columns">
+              <div class="column is-4 has-text-centered">
+                <span class="icon is-large has-text-primary">
+                  <i class="mdi mdi-school mdi-48px"></i>
+                </span>
+                <p class="title is-4"><%= classes.length %></p>
+                <p class="subtitle is-6">Classes to Manage</p>
+              </div>
+              <div class="column is-4 has-text-centered">
+                <span class="icon is-large has-text-info">
+                  <i class="mdi mdi-account-group mdi-48px"></i>
+                </span>
+                <p class="title is-4"><%= classes.reduce((sum, cls) => sum + parseInt(cls.student_count || 0), 0) %></p>
+                <p class="subtitle is-6">Total Students</p>
+              </div>
+              <div class="column is-4 has-text-centered">
+                <span class="icon is-large has-text-success">
+                  <i class="mdi mdi-clipboard-check-outline mdi-48px"></i>
+                </span>
+                <p class="title is-4">Ready</p>
+                <p class="subtitle is-6">For Score Entry</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle Enter Scores button clicks
+  document.querySelectorAll('.enter-scores-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const classId = this.dataset.classId;
+      const subjectId = this.dataset.subjectId;
+      
+      // Get the corresponding year and term selects
+      const yearSelect = document.querySelector(`.academic-year-select[data-class-id="${classId}"][data-subject-id="${subjectId}"]`);
+      const termSelect = document.querySelector(`.term-select[data-class-id="${classId}"][data-subject-id="${subjectId}"]`);
+      
+      const academicYear = yearSelect.value;
+      const term = termSelect.value;
+      
+      // Navigate to score entry page
+      window.location.href = `/teacher/scores/entry?class_id=${classId}&subject_id=${subjectId}&academic_year=${academicYear}&term=${term}`;
+    });
+  });
+});
+</script>
+
+<%- include('../../partials/footer') %>

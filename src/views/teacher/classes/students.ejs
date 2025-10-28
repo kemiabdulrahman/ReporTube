@@ -1,0 +1,193 @@
+<%- include('../../partials/header', { title: 'Class Students - ' + class.name }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-account-group-outline"></i></span>
+          <span>Students - <%= class.name %></span>
+        </h2>
+        <p class="subtitle is-5">
+          <span class="tag is-info is-light"><%= class.level %></span>
+        </p>
+      </div>
+      <div class="level-right">
+        <div class="buttons">
+          <a href="/teacher/scores/entry?class_id=<%= class.id %>&subject_id=<%= subject_id %>&academic_year=2024&term=1" class="button is-primary">
+            <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+            <span>Enter Scores</span>
+          </a>
+          <a href="/teacher/classes" class="button is-light">
+            <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+            <span>Back to Classes</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Class Info -->
+    <div class="box mb-5">
+      <div class="columns">
+        <div class="column is-3">
+          <div class="has-text-centered">
+            <span class="icon is-large has-text-primary">
+              <i class="mdi mdi-school mdi-48px"></i>
+            </span>
+            <p class="title is-5"><%= class.name %></p>
+            <p class="subtitle is-6"><%= class.level %></p>
+          </div>
+        </div>
+        <div class="column is-9">
+          <div class="columns is-multiline">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Total Students</label>
+                <p class="control">
+                  <span class="tag is-primary is-medium">
+                    <span class="icon"><i class="mdi mdi-account-group"></i></span>
+                    <span><%= students.length %></span>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Class Level</label>
+                <p class="control">
+                  <span class="tag is-info is-medium"><%= class.level %></span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students List -->
+    <div class="box">
+      <h3 class="title is-4 mb-4">
+        <span class="icon"><i class="mdi mdi-account-group-outline"></i></span>
+        <span>Students List</span>
+      </h3>
+
+      <% if (students.length === 0) { %>
+        <div class="notification is-info is-light">
+          <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+          <span>No students found in this class.</span>
+        </div>
+      <% } else { %>
+        <div class="table-container">
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-account"></i></span>
+                  <span>Student Name</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-email-outline"></i></span>
+                  <span>Email</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-calendar"></i></span>
+                  <span>Date of Birth</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-gender-male-female"></i></span>
+                  <span>Gender</span>
+                </th>
+                <th>
+                  <span class="icon"><i class="mdi mdi-cog"></i></span>
+                  <span>Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(function(student, index) { %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td>
+                    <div class="media">
+                      <div class="media-left">
+                        <span class="icon has-text-primary">
+                          <i class="mdi mdi-account-circle"></i>
+                        </span>
+                      </div>
+                      <div class="media-content">
+                        <strong><%= student.first_name %> <%= student.last_name %></strong>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= student.email || 'N/A' %></td>
+                  <td>
+                    <% if (student.date_of_birth) { %>
+                      <%= new Date(student.date_of_birth).toLocaleDateString() %>
+                    <% } else { %>
+                      N/A
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (student.gender) { %>
+                      <span class="tag is-light <%= student.gender === 'Male' ? 'is-info' : 'is-success' %>">
+                        <span class="icon">
+                          <i class="mdi mdi-<%= student.gender === 'Male' ? 'gender-male' : 'gender-female' %>"></i>
+                        </span>
+                        <span><%= student.gender %></span>
+                      </span>
+                    <% } else { %>
+                      N/A
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="buttons are-small">
+                      <a href="/teacher/reports/student?student_id=<%= student.id %>&academic_year=2024&term=1" 
+                         class="button is-info is-outlined" 
+                         title="View Report">
+                        <span class="icon"><i class="mdi mdi-file-document-outline"></i></span>
+                        <span>Report</span>
+                      </a>
+                      <a href="/teacher/reports/download?student_id=<%= student.id %>&academic_year=2024&term=1" 
+                         class="button is-success is-outlined" 
+                         title="Download Report">
+                        <span class="icon"><i class="mdi mdi-download"></i></span>
+                        <span>Download</span>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Quick Actions -->
+    <% if (students.length > 0) { %>
+      <div class="box">
+        <h3 class="title is-5 mb-4">
+          <span class="icon"><i class="mdi mdi-lightning-bolt-outline"></i></span>
+          <span>Quick Actions</span>
+        </h3>
+        
+        <div class="buttons">
+          <a href="/teacher/scores/entry?class_id=<%= class.id %>&subject_id=<%= subject_id %>&academic_year=2024&term=1" class="button is-primary">
+            <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+            <span>Enter Scores for This Class</span>
+          </a>
+          <a href="/teacher/scores/entry?class_id=<%= class.id %>&subject_id=<%= subject_id %>&academic_year=2024&term=2" class="button is-info">
+            <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+            <span>Enter Scores (Term 2)</span>
+          </a>
+        </div>
+      </div>
+    <% } %>
+
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

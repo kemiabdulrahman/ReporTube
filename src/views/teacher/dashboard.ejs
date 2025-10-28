@@ -1,115 +1,147 @@
 <%- include('../partials/header', { title: 'Teacher Dashboard' }) %>
 
-<div class="container-fluid">
-    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Teacher Dashboard</h2>
+<section class="section">
+  <div class="container">
 
-    <!-- Welcome Message -->
-    <div class="alert alert-info mb-4">
-        <h4><i class="bi bi-person-circle"></i> Welcome, <%= user.full_name %>!</h4>
-        <p class="mb-0">Manage your classes and update student scores from this dashboard.</p>
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>
+          <span>Teacher Dashboard</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <div class="buttons">
+          <a href="/teacher/scores/my-classes" class="button is-primary">
+            <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+            <span>Enter Scores</span>
+          </a>
+          <a href="/teacher/classes" class="button is-info">
+            <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+            <span>My Classes</span>
+          </a>
+        </div>
+      </div>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title text-uppercase">My Classes</h6>
-                            <h2 class="mb-0"><%= stats.totalClasses %></h2>
-                        </div>
-                        <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
-                    </div>
-                </div>
+    <!-- Stats Cards -->
+    <div class="columns mb-5">
+      <div class="column is-6">
+        <div class="box has-background-primary-light">
+          <div class="level">
+            <div class="level-left">
+              <div>
+                <p class="heading">Total Classes</p>
+                <p class="title is-3"><%= stats.totalClasses %></p>
+              </div>
             </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title text-uppercase">Total Students</h6>
-                            <h2 class="mb-0"><%= stats.totalStudents %></h2>
-                        </div>
-                        <i class="bi bi-people" style="font-size: 3rem; opacity: 0.3;"></i>
-                    </div>
-                </div>
+            <div class="level-right">
+              <span class="icon is-large has-text-primary">
+                <i class="mdi mdi-school-outline mdi-48px"></i>
+              </span>
             </div>
+          </div>
         </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <a href="/teacher/classes" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-building"></i> View My Classes
-                            </a>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <a href="/teacher/scores/my-classes" class="btn btn-outline-success w-100">
-                                <i class="bi bi-pencil-square"></i> Enter Scores
-                            </a>
-                        </div>
-                    </div>
-                </div>
+      </div>
+      <div class="column is-6">
+        <div class="box has-background-info-light">
+          <div class="level">
+            <div class="level-left">
+              <div>
+                <p class="heading">Total Students</p>
+                <p class="title is-3"><%= stats.totalStudents %></p>
+              </div>
             </div>
+            <div class="level-right">
+              <span class="icon is-large has-text-info">
+                <i class="mdi mdi-account-group-outline mdi-48px"></i>
+              </span>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- My Classes -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-building"></i> My Classes</h5>
-                </div>
-                <div class="card-body">
-                    <% if (classes.length > 0) { %>
-                    <div class="row">
-                        <% classes.forEach(cls => { %>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-primary">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= cls.name %></h5>
-                                    <p class="card-text">
-                                        <strong>Subject:</strong> <%= cls.subject_name %><br>
-                                        <strong>Level:</strong> <%= cls.level %><br>
-                                        <strong>Students:</strong> <%= cls.student_count %><br>
-                                        <strong>Year:</strong> <%= cls.academic_year %>
-                                    </p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/teacher/classes/<%= cls.id %>/students/<%= cls.subject_id %>"
-                                           class="btn btn-sm btn-primary">
-                                            <i class="bi bi-people"></i> View Students
-                                        </a>
-                                        <a href="/teacher/scores/entry?class_id=<%= cls.id %>&subject_id=<%= cls.subject_id %>&academic_year=<%= cls.academic_year %>&term=First Term"
-                                           class="btn btn-sm btn-success">
-                                            <i class="bi bi-pencil"></i> Enter Scores
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <% }) %>
-                    </div>
-                    <% } else { %>
-                    <p class="text-muted text-center mb-0">
-                        You are not assigned to any classes yet. Please contact the administrator.
-                    </p>
-                    <% } %>
-                </div>
-            </div>
+    <div class="box">
+      <h3 class="title is-4 mb-4">
+        <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+        <span>My Classes</span>
+      </h3>
+
+      <% if (classes.length === 0) { %>
+        <div class="notification is-info is-light">
+          <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+          <span>No classes assigned yet. Contact your administrator to get classes assigned.</span>
         </div>
+      <% } else { %>
+        <div class="columns is-multiline">
+          <% classes.forEach(function(classItem) { %>
+            <div class="column is-4">
+              <div class="card">
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-left">
+                      <span class="icon is-large has-text-primary">
+                        <i class="mdi mdi-school mdi-36px"></i>
+                      </span>
+                    </div>
+                    <div class="media-content">
+                      <p class="title is-5"><%= classItem.name %></p>
+                      <p class="subtitle is-6"><%= classItem.level %></p>
+                      <p class="has-text-grey">
+                        <span class="icon is-small"><i class="mdi mdi-account-group"></i></span>
+                        <span><%= classItem.student_count || 0 %> students</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <footer class="card-footer">
+                  <a href="/teacher/classes/<%= classItem.id %>/students/<%= classItem.subject_id %>" class="card-footer-item">
+                    <span class="icon"><i class="mdi mdi-account-group-outline"></i></span>
+                    <span>View Students</span>
+                  </a>
+                  <a href="/teacher/scores/entry?class_id=<%= classItem.id %>&subject_id=<%= classItem.subject_id %>&academic_year=2024&term=1" class="card-footer-item">
+                    <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+                    <span>Enter Scores</span>
+                  </a>
+                </footer>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
     </div>
-</div>
+
+    <!-- Quick Actions -->
+    <div class="box">
+      <h3 class="title is-4 mb-4">
+        <span class="icon"><i class="mdi mdi-lightning-bolt-outline"></i></span>
+        <span>Quick Actions</span>
+      </h3>
+      
+      <div class="buttons">
+        <a href="/teacher/scores/my-classes" class="button is-primary">
+          <span class="icon"><i class="mdi mdi-clipboard-edit-outline"></i></span>
+          <span>Enter Student Scores</span>
+        </a>
+        <a href="/teacher/classes" class="button is-info">
+          <span class="icon"><i class="mdi mdi-school-outline"></i></span>
+          <span>View All Classes</span>
+        </a>
+        <a href="/teacher/reports/student" class="button is-success">
+          <span class="icon"><i class="mdi mdi-file-document-outline"></i></span>
+          <span>Generate Reports</span>
+        </a>
+        <a href="/auth/change-password" class="button is-light">
+          <span class="icon"><i class="mdi mdi-key-outline"></i></span>
+          <span>Change Password</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <%- include('../partials/footer') %>
