@@ -1,0 +1,105 @@
+<%- include('../../partials/header', { title: 'Users Management' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-account-badge"></i></span>
+          <span>Users Management</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <a href="/admin/users/add" class="button is-primary">
+          <span class="icon"><i class="mdi mdi-account-plus"></i></span>
+          <span>Add New User</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="box">
+      <div class="level mb-3">
+        <div class="level-left">
+          <h5 class="title is-5">
+            <span class="icon"><i class="mdi mdi-format-list-bulleted"></i></span>
+            <span>All Users</span>
+          </h5>
+        </div>
+        <div class="level-right">
+          <span class="tag is-primary is-medium"><%= users.length %></span>
+        </div>
+      </div>
+
+      <% if (users.length > 0) { %>
+        <div class="table-container">
+          <table class="table is-hoverable is-striped is-fullwidth">
+            <thead>
+              <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th class="has-text-centered">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(user => { %>
+                <tr>
+                  <td><strong><%= user.full_name %></strong></td>
+                  <td><%= user.email %></td>
+                  <td>
+                    <% if (user.role === 'admin') { %>
+                      <span class="tag is-danger is-light"><i class="mdi mdi-shield-account-outline"></i> &nbsp;Admin</span>
+                    <% } else if (user.role === 'teacher') { %>
+                      <span class="tag is-info is-light"><i class="mdi mdi-teach"></i> &nbsp;Teacher</span>
+                    <% } else { %>
+                      <span class="tag is-success is-light"><i class="mdi mdi-account"></i> &nbsp;User</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (user.is_active) { %>
+                      <span class="tag is-success"><i class="mdi mdi-check-circle-outline"></i> &nbsp;Active</span>
+                    <% } else { %>
+                      <span class="tag is-light"><i class="mdi mdi-close-circle-outline"></i> &nbsp;Inactive</span>
+                    <% } %>
+                  </td>
+                  <td class="has-text-centered">
+                    <div class="buttons are-small is-centered">
+                      <a href="/admin/users/edit/<%= user.id %>" class="button is-info is-light" title="Edit User">
+                        <span class="icon"><i class="mdi mdi-pencil"></i></span>
+                      </a>
+                      <form action="/admin/users/delete/<%= user.id %>" method="POST" style="display:inline;">
+                        <button type="submit" class="button is-danger is-light"
+                                onclick="return confirm('Are you sure you want to delete this user?');"
+                                title="Delete User">
+                          <span class="icon"><i class="mdi mdi-trash-can-outline"></i></span>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="has-text-centered py-6">
+          <span class="icon is-large has-text-grey-light" style="font-size: 3rem;">
+            <i class="mdi mdi-account-off-outline"></i>
+          </span>
+          <p class="has-text-grey mt-3">No users found.</p>
+          <a href="/admin/users/add" class="button is-primary mt-3">
+            <span class="icon"><i class="mdi mdi-account-plus"></i></span>
+            <span>Add Your First User</span>
+          </a>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

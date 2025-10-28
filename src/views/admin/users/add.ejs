@@ -1,0 +1,113 @@
+<%- include('../../partials/header', { title: 'Add User' }) %>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8-tablet is-6-desktop">
+
+        <!-- Card -->
+        <div class="card">
+          <header class="card-header has-background-primary">
+            <p class="card-header-title has-text-white">
+              <span class="icon"><i class="mdi mdi-account-plus"></i></span>
+              &nbsp; Add New User
+            </p>
+          </header>
+
+          <div class="card-content">
+            <% if (error) { %>
+              <div class="notification is-danger is-light">
+                <span class="icon"><i class="mdi mdi-alert-circle-outline"></i></span>
+                &nbsp;<%= error %>
+              </div>
+            <% } %>
+
+            <form action="/admin/users/add" method="POST">
+
+              <!-- Full Name -->
+              <div class="field">
+                <label class="label">Full Name *</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input"
+                    type="text"
+                    name="full_name"
+                    id="full_name"
+                    placeholder="Enter full name"
+                    required>
+                  <span class="icon is-left"><i class="mdi mdi-account"></i></span>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="field">
+                <label class="label">Email *</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input"
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Enter email"
+                    required>
+                  <span class="icon is-left"><i class="mdi mdi-email-outline"></i></span>
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="field">
+                <label class="label">Password *</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input"
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter password"
+                    required>
+                  <span class="icon is-left"><i class="mdi mdi-lock-outline"></i></span>
+                </div>
+                <p class="help is-info">Password will be sent to the user’s email after creation.</p>
+              </div>
+
+              <!-- Role -->
+              <div class="field">
+                <label class="label">Role *</label>
+                <div class="control has-icons-left">
+                  <div class="select is-fullwidth">
+                    <select name="role" id="role" required>
+                      <option value="">Select role</option>
+                      <option value="admin">Admin</option>
+                      <option value="teacher">Teacher</option>
+                      <option value="user">User</option>
+                    </select>
+                  </div>
+                  <span class="icon is-left"><i class="mdi mdi-shield-account-outline"></i></span>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="field is-grouped is-grouped-right mt-5">
+                <div class="control">
+                  <button type="submit" class="button is-primary">
+                    <span class="icon"><i class="mdi mdi-check"></i></span>
+                    <span>Add User</span>
+                  </button>
+                </div>
+                <div class="control">
+                  <a href="/admin/users" class="button is-light">
+                    <span class="icon"><i class="mdi mdi-cancel"></i></span>
+                    <span>Cancel</span>
+                  </a>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

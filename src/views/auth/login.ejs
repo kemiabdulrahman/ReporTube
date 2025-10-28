@@ -1,80 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - ReporTube</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 15px 15px 0 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - ReporTube</title>
+
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+  <!-- Material Design Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      max-width: 420px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem 1.5rem;
+    }
+
+    .login-header .icon {
+      font-size: 3rem;
+    }
+
+    .login-body {
+      padding: 2rem;
+    }
+
+    .button.is-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+    }
+
+    .button.is-primary:hover {
+      opacity: 0.9;
+    }
+
+    .footer-note {
+      background: #f9f9f9;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    @media (max-width: 480px) {
+      .login-body {
+        padding: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card login-card">
-                    <div class="login-header text-center">
-                        <i class="bi bi-journal-text" style="font-size: 3rem;"></i>
-                        <h2 class="mt-2">ReporTube</h2>
-                        <p class="mb-0">Academic Reporting Platform</p>
-                    </div>
-                    <div class="card-body p-4">
-                        <h4 class="text-center mb-4">Login to Your Account</h4>
-
-                        <% if (error) { %>
-                        <div class="alert alert-danger" role="alert">
-                            <i class="bi bi-exclamation-circle"></i> <%= error %>
-                        </div>
-                        <% } %>
-
-                        <form action="/auth/login" method="POST">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">
-                                    <i class="bi bi-envelope"></i> Email Address
-                                </label>
-                                <input type="email" class="form-control" id="email" name="email" required autofocus>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label">
-                                    <i class="bi bi-lock"></i> Password
-                                </label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-box-arrow-in-right"></i> Login
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center text-muted">
-                        <small>&copy; <%= new Date().getFullYear() %> ReporTube. All rights reserved.</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="login-card">
+    <div class="login-header">
+      <span class="icon">
+        <i class="mdi mdi-file-document-outline"></i>
+      </span>
+      <h2 class="title is-4 mt-2 has-text-white">ReporTube</h2>
+      <p class="is-size-6">Academic Reporting Platform</p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="login-body">
+      <h4 class="title is-5 has-text-centered mb-4">Login to Your Account</h4>
+
+      <% if (error) { %>
+      <div class="notification is-danger is-light">
+        <i class="mdi mdi-alert-circle-outline"></i> <%= error %>
+      </div>
+      <% } %>
+
+      <form action="/auth/login" method="POST">
+        <div class="field">
+          <label class="label"><i class="mdi mdi-email-outline"></i> Email Address</label>
+          <div class="control has-icons-left">
+            <input class="input" type="email" id="email" name="email" placeholder="you@example.com" required autofocus>
+            <span class="icon is-small is-left">
+              <i class="mdi mdi-email-outline"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label"><i class="mdi mdi-lock-outline"></i> Password</label>
+          <div class="control has-icons-left">
+            <input class="input" type="password" id="password" name="password" placeholder="••••••••" required>
+            <span class="icon is-small is-left">
+              <i class="mdi mdi-lock-outline"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="field mt-5">
+          <div class="control">
+            <button type="submit" class="button is-primary is-fullwidth is-medium">
+              <span class="icon"><i class="mdi mdi-login"></i></span>
+              <span>Login</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer-note">
+      &copy; <%= new Date().getFullYear() %> ReporTube — All rights reserved.
+    </div>
+  </div>
 </body>
 </html>

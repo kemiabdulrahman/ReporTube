@@ -1,0 +1,112 @@
+<%- include('../../partials/header', { title: 'Edit User' }) %>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8-tablet is-6-desktop">
+
+        <!-- Card -->
+        <div class="card">
+          <header class="card-header has-background-link">
+            <p class="card-header-title has-text-white">
+              <span class="icon"><i class="mdi mdi-account-edit"></i></span>
+              &nbsp; Edit User
+            </p>
+          </header>
+
+          <div class="card-content">
+            <% if (error) { %>
+              <div class="notification is-danger is-light">
+                <span class="icon"><i class="mdi mdi-alert-circle-outline"></i></span>
+                &nbsp;<%= error %>
+              </div>
+            <% } %>
+
+            <form action="/admin/users/edit/<%= user.id %>" method="POST">
+
+              <!-- Full Name -->
+              <div class="field">
+                <label class="label">Full Name *</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input"
+                    type="text"
+                    name="full_name"
+                    id="full_name"
+                    value="<%= user.full_name %>"
+                    placeholder="Enter full name"
+                    required>
+                  <span class="icon is-left"><i class="mdi mdi-account"></i></span>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="field">
+                <label class="label">Email *</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input"
+                    type="email"
+                    name="email"
+                    id="email"
+                    value="<%= user.email %>"
+                    placeholder="Enter email"
+                    required>
+                  <span class="icon is-left"><i class="mdi mdi-email-outline"></i></span>
+                </div>
+              </div>
+
+              <!-- Role (read-only if desired) -->
+              <div class="field">
+                <label class="label">Role</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input"
+                    type="text"
+                    value="<%= user.role %>"
+                    readonly>
+                  <span class="icon is-left"><i class="mdi mdi-shield-account-outline"></i></span>
+                </div>
+                <p class="help is-info">Role cannot be changed here.</p>
+              </div>
+
+              <!-- Active Status -->
+              <div class="field">
+                <label class="label">Active Status</label>
+                <div class="control">
+                  <label class="radio">
+                    <input type="radio" name="is_active" value="true" <%= user.is_active ? 'checked' : '' %>>
+                    Active
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="is_active" value="false" <%= !user.is_active ? 'checked' : '' %>>
+                    Inactive
+                  </label>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="field is-grouped is-grouped-right mt-5">
+                <div class="control">
+                  <button type="submit" class="button is-link">
+                    <span class="icon"><i class="mdi mdi-content-save"></i></span>
+                    <span>Save Changes</span>
+                  </button>
+                </div>
+                <div class="control">
+                  <a href="/admin/users" class="button is-light">
+                    <span class="icon"><i class="mdi mdi-cancel"></i></span>
+                    <span>Cancel</span>
+                  </a>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,29 @@
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* Pushes footer to bottom when content is short */
+}
+
+.footer {
+  position: relative; /* normal when content exceeds screen height */
+  bottom: 0;
+  width: 100%;
+}
+
+.navbar.is-primary {
+  background: linear-gradient(135deg, #4a90e2, #0078d7);
+}
+
+.navbar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.navbar-item i {
+  margin-right: 5px;
+}
+
+
