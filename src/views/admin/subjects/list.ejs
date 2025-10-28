@@ -1,0 +1,68 @@
+<%- include('../../partials/header', { title: 'Subjects Management' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-book-open-variant"></i></span>
+          <span>Subjects Management</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <a href="/admin/subjects/add" class="button is-primary">
+          <span class="icon"><i class="mdi mdi-plus-circle-outline"></i></span>
+          <span>Add New Subject</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Subjects Table -->
+    <div class="box">
+      <% if (subjects && subjects.length > 0) { %>
+        <div class="table-container">
+          <table class="table is-fullwidth is-hoverable is-striped">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Subject Name</th>
+                <th>Description</th>
+                <th class="has-text-centered">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% subjects.forEach(subject => { %>
+                <tr>
+                  <td><strong><%= subject.code %></strong></td>
+                  <td><%= subject.name %></td>
+                  <td><%= subject.description || '—' %></td>
+                  <td class="has-text-centered">
+                    <!-- Edit Button -->
+                    <a href="/admin/subjects/edit/<%= subject.id %>" class="button is-small is-info is-light">
+                      <span class="icon"><i class="mdi mdi-pencil-outline"></i></span>
+                    </a>
+
+                    <!-- Delete Button -->
+                    <form action="/admin/subjects/delete/<%= subject.id %>" method="POST" style="display:inline;">
+                      <button type="submit" class="button is-small is-danger is-light"
+                        onclick="return confirm('Are you sure you want to delete this subject?');">
+                        <span class="icon"><i class="mdi mdi-trash-can-outline"></i></span>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p class="has-text-grey has-text-centered">No subjects have been added yet.</p>
+      <% } %>
+    </div>
+
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

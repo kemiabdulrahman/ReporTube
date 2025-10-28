@@ -1,0 +1,99 @@
+<%- include('../../partials/header', { title: 'Add New Subject' }) %>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-book-plus-outline"></i></span>
+          <span>Add New Subject</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <a href="/admin/subjects" class="button is-light">
+          <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+          <span>Back to List</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <% if (error) { %>
+      <div class="notification is-danger is-light">
+        <span class="icon"><i class="mdi mdi-alert-circle-outline"></i></span>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <!-- Add Subject Form -->
+    <div class="box">
+      <form action="/admin/subjects/add" method="POST">
+
+        <!-- Subject Name -->
+        <div class="field">
+          <label class="label">Subject Name</label>
+          <div class="control has-icons-left">
+            <input
+              class="input"
+              type="text"
+              name="name"
+              placeholder="Enter subject name (e.g. Mathematics)"
+              required
+            >
+            <span class="icon is-left"><i class="mdi mdi-book-outline"></i></span>
+          </div>
+        </div>
+
+        <!-- Subject Code -->
+        <div class="field">
+          <label class="label">Subject Code</label>
+          <div class="control has-icons-left">
+            <input
+              class="input"
+              type="text"
+              name="code"
+              placeholder="Enter subject code (e.g. MATH101)"
+              required
+            >
+            <span class="icon is-left"><i class="mdi mdi-code-tags"></i></span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="field">
+          <label class="label">Description</label>
+          <div class="control">
+            <textarea
+              class="textarea"
+              name="description"
+              placeholder="Enter subject description (optional)"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="field is-grouped is-grouped-right">
+          <div class="control">
+            <a href="/admin/subjects" class="button is-light">
+              <span class="icon"><i class="mdi mdi-cancel"></i></span>
+              <span>Cancel</span>
+            </a>
+          </div>
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <span class="icon"><i class="mdi mdi-content-save-outline"></i></span>
+              <span>Save Subject</span>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,107 @@
+<%- include('../../partials/header', { title: 'Add New Class' }) %>
+
+<section class="section">
+  <div class="container">
+    <!-- Header -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <h2 class="title is-3">
+          <span class="icon"><i class="mdi mdi-school"></i></span>
+          <span>Add New Class</span>
+        </h2>
+      </div>
+      <div class="level-right">
+        <a href="/admin/classes" class="button is-light">
+          <span class="icon"><i class="mdi mdi-arrow-left"></i></span>
+          <span>Back to Classes</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Form Box -->
+    <div class="box">
+      <% if (error) { %>
+        <div class="notification is-danger is-light">
+          <button class="delete"></button>
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/admin/classes/add" method="POST">
+        <div class="columns is-multiline">
+          <!-- Class Name -->
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Class Name</label>
+              <div class="control has-icons-left">
+                <input 
+                  class="input" 
+                  type="text" 
+                  name="name" 
+                  placeholder="e.g. JSS 1A" 
+                  required>
+                <span class="icon is-left">
+                  <i class="mdi mdi-google-classroom"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Level -->
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Level</label>
+              <div class="control has-icons-left">
+                <input 
+                  class="input" 
+                  type="text" 
+                  name="level" 
+                  placeholder="e.g. JSS 1"
+                  required>
+                <span class="icon is-left">
+                  <i class="mdi mdi-layers-triple"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Year -->
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Academic Year</label>
+              <div class="control has-icons-left">
+                <input 
+                  class="input" 
+                  type="text" 
+                  name="academic_year" 
+                  placeholder="e.g. 2025/2026"
+                  required>
+                <span class="icon is-left">
+                  <i class="mdi mdi-calendar-range"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="field is-grouped mt-4">
+          <div class="control">
+            <button type="submit" class="button is-primary">
+              <span class="icon"><i class="mdi mdi-content-save"></i></span>
+              <span>Save Class</span>
+            </button>
+          </div>
+          <div class="control">
+            <a href="/admin/classes" class="button is-light">
+              <span class="icon"><i class="mdi mdi-cancel"></i></span>
+              <span>Cancel</span>
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

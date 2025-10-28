@@ -140,7 +140,7 @@ exports.showClassDetails = async (req, res, next) => {
     }
 
     res.render('admin/classes/details', {
-      class: classData,
+      classData,
       students,
       teachers,
       subjects,
