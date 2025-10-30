@@ -1,24 +1,56 @@
-</main>
+  </main>
 
-<% if (typeof user !== 'undefined' && user) { %>
-<footer class="footer has-background-light has-text-centered py-4">
-  <div class="content has-text-grey">
-    <p>&copy; <%= new Date().getFullYear() %> <strong>ReporTube</strong> — Academic Reporting Platform</p>
-  </div>
-</footer>
-<% } %>
+  <% if (typeof user !== 'undefined' && user) { %>
+  <!-- Footer for authenticated users -->
+  <footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="text-center md:text-left">
+          <p class="text-sm text-gray-600">
+            &copy; <%= new Date().getFullYear() %> <span class="font-semibold text-primary-600">ReporTube</span> — Academic Reporting Platform
+          </p>
+        </div>
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors duration-200">
+            <span class="text-xs">Privacy Policy</span>
+          </a>
+          <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors duration-200">
+            <span class="text-xs">Terms of Service</span>
+          </a>
+          <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors duration-200">
+            <span class="text-xs">Help Center</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <% } %>
 
-<script src="/js/main.js" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const burger = document.querySelector('.navbar-burger');
-  if (!burger) return;
-  const menu = document.getElementById(burger.dataset.target);
-  burger.addEventListener('click', () => {
-    burger.classList.toggle('is-active');
-    menu.classList.toggle('is-active');
-  });
-});
-</script>
+  <!-- Mobile menu toggle script -->
+  <script src="/js/main.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+
+          // Toggle menu icon
+          if (menuIcon) {
+            if (mobileMenu.classList.contains('hidden')) {
+              menuIcon.classList.remove('mdi-close');
+              menuIcon.classList.add('mdi-menu');
+            } else {
+              menuIcon.classList.remove('mdi-menu');
+              menuIcon.classList.add('mdi-close');
+            }
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
